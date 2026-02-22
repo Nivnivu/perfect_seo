@@ -1,0 +1,8 @@
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+pytrends>=4.9.0
+google-genai>=1.0.0
+pyyaml>=6.0
+pymongo[srv]>=4.0.0
+supabase>=2.0.0
+Pillow>=10.0.0

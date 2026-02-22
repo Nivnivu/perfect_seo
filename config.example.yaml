@@ -1,0 +1,67 @@
+gemini:
+  api_key: "YOUR_GEMINI_API_KEY"
+  model: "gemini-2.5-flash"
+  image_model: "imagen-4"
+
+site:
+  name: "YourSite"
+  domain: "yoursite.com"
+  blog_url: "https://yoursite.com/blog"
+  language: "he"
+  country: "il"
+  google_domain: "google.co.il"
+  logo: "companies_logos/yourLogo.png"
+
+scraping:
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+  request_delay: 2
+
+mongodb:
+  uri: "YOUR_MONGODB_URI"
+  database: "multiBlogDB"
+  collection: "your_collection"
+
+supabase:
+  url: "YOUR_SUPABASE_URL"
+  key: "YOUR_SUPABASE_KEY"
+  bucket: "blog-poster"
+
+whatsapp:
+  phone_number: "YOUR_PHONE_NUMBER"
+  approval_timeout: 1800
+
+competitors:
+  - "https://competitor1.com/"
+  - "https://competitor2.com/"
+
+keywords:
+  seeds:
+    - "keyword 1"
+    - "keyword 2"
+    - "keyword 3"
+
+context:
+  urls:
+    - url: "https://yoursite.com"
+      type: "homepage"
+    - url: "https://yoursite.com/products"
+      type: "products"
+
+  image_style:
+    description: "your business description"
+    visual_elements: "describe the visual style for generated images"
+    color_palette: "describe your brand colors"
+
+  brand_voice: |
+    Your brand voice description here.
+    Tone, style, audience.
+
+  unique_selling_points:
+    - "USP 1"
+    - "USP 2"
+
+  products:
+    - name: "Product 1"
+      description: "Description of product 1"
+    - name: "Product 2"
+      description: "Description of product 2"

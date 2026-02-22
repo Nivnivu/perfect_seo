@@ -1,0 +1,26 @@
+# Environment
+.env
+
+# Config files (contain secrets - use config.example.yaml as template)
+config.yaml
+config.*.yaml
+!config.example.yaml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Node (whatsapp module)
+node_modules/
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Output
+output/
+
+# OS
+.DS_Store
+Thumbs.db

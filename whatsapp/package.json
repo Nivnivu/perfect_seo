@@ -1,0 +1,10 @@
+{
+  "name": "pawly-whatsapp-approval",
+  "version": "1.0.0",
+  "description": "One-shot WhatsApp approval script for Pawly blog engine",
+  "main": "send_and_wait.js",
+  "dependencies": {
+    "whatsapp-web.js": "^1.26.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
