@@ -65,6 +65,14 @@ def publish_blog_post(gemini_output, desktop_image_bytes, mobile_image_bytes, co
     post_id = insert_blog_post(post_data, config)
     print(f"  [publish] Post inserted with _id: {post_id}")
 
+    # Ping GSC sitemap after every publish so Google indexes the new post faster
+    if config.get("search_console"):
+        try:
+            from tools.search_console import ping_sitemap
+            ping_sitemap(config)
+        except Exception as e:
+            print(f"  [publish] Sitemap ping failed (non-critical): {e}")
+
     return {
         "post_id": post_id,
         "title": parsed["title"],
@@ -97,20 +105,44 @@ def update_post_images(post_id, desktop_image_bytes, mobile_image_bytes, config)
     return update_fields
 
 
-def update_existing_post(post_id, gemini_output, desktop_image_bytes, mobile_image_bytes, config):
+def update_existing_post(post_id, gemini_output, desktop_image_bytes, mobile_image_bytes, config, preserve_title=None, subtitle_only=False):
     """
     Update an existing blog post:
     1. Parse rewritten Gemini output
     2. Upload new images to Supabase (if provided)
     3. Update the post in MongoDB
+
+    preserve_title: force this title regardless of what Gemini returned (prevents URL changes).
+    subtitle_only: only update the meta description (subtitle), never touch body or images.
+                   Used for ctr_opportunity posts that rank on page 1 but have low CTR.
     """
     print(f"  [update] Parsing rewritten output for post {post_id}...")
     parsed = parse_gemini_output(gemini_output)
 
-    if not parsed["title"]:
-        raise ValueError("Failed to parse title from rewritten output")
+    if not parsed["subtitle"]:
+        raise ValueError("Failed to parse meta description from rewritten output")
+
+    # subtitle_only mode: only update meta description, never touch body or images
+    if subtitle_only:
+        title = preserve_title or parsed["title"]
+        print(f"  [update] SUBTITLE-ONLY mode — updating meta description for: {title}")
+        print(f"  [update] New meta: {parsed['subtitle'][:100]}")
+        modified = update_blog_post(post_id, {"subtitle": parsed["subtitle"]}, config)
+        print(f"  [update] Updated subtitle for post {post_id}: {modified} document(s) modified")
+        return {
+            "post_id": post_id,
+            "title": title,
+            "modified": modified,
+        }
+
     if not parsed["body_tiptap"]:
         raise ValueError("Failed to parse/convert body from rewritten output")
+
+    # Safety net: ALWAYS preserve original title — title = URL slug in the CMS.
+    # Changing the title changes the URL → 404 → loses all rankings.
+    if preserve_title:
+        print(f"  [update] PROTECTED title — keeping: {preserve_title}")
+        parsed["title"] = preserve_title
 
     print(f"  [update] New title: {parsed['title']}")
 

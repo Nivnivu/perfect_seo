@@ -1,0 +1,511 @@
+[Sun 03/01/2026 10:00:01.12] Starting weekly NEW post for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+  [context] Scraping products: https://pawly.co.il/cats
+  [context] Scraping blog_index: https://pawly.co.il/blog
+  [context] Scraped 4 pages, 28 internal links, 17 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 40 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 40 keywords
+
+  Top keywords by trend interest:
+    מזון לחתולים זול: 1
+    מזון לכלבים גוסבי: 1
+    מזון לחתולים מומלץ: 1
+    מזון לחתולים פריסקיז: 0
+    מזון לכלבים brit: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'מזון לחתולים זול'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לכלבים גוסבי'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לחתולים מומלץ'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לחתולים פריסקיז'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לכלבים brit'
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  [competitor] Error analyzing https://likeah.co.il/: 525 Server Error: <none> for url: https://likeah.co.il/
+  Competitor avg word count: 857
+
+[Phase 3] Auditing existing Pawly blog posts from MongoDB...
+  15 existing posts analyzed
+  40 keyword topics not yet covered
+  11 posts need updating
+
+[Phase 3b] Fetching Google Search Console data for title protection...
+  [gsc] Fetching performance data (2026-01-29 to 2026-02-26)...
+  [gsc] Got performance data for 88 pages
+  [gsc] PROTECTED: נטורל וודלנד: מזון סופר פרימיום טבעי לכלבים – המדר (position=9.5<=20.0)
+  [gsc] Not protected: נאטורל גרייטנס ופאולי: תזונה אולטרה פרימיום טבעית  (no GSC data found)
+  [gsc] Not protected: פארם נייצ'ר: מזון פרימיום טבעי - הבחירה המושכלת לב (no GSC data found)
+  [gsc] Not protected: איך Pawly מובילה את מהפכת המזון ללא דגנים בישראל ו (no GSC data found)
+  [gsc] Not protected: Pawly: שותפות אסטרטגית לחנויות חיות - יבואן מוביל  (no GSC data found)
+  [gsc] PROTECTED: מדריך מקיף לבעלי חנויות חיות: הגדלת רווחיות עם מזו (position=4.0<=20.0)
+  [gsc] Not protected: איך סידור חנות אביזרים לכלבים מגדיל מכירות? טיפים  (no GSC data found)
+  [gsc] Not protected: Natural Greatness: המדריך המקיף לתזונה טבעית אולטר (no GSC data found)
+  [gsc] Not protected: מהפכה בתזונה הווטרינרית: מזון טבעי לכלבים וחתולים  (no GSC data found)
+  [gsc] Not protected: Pawly: המדריך המקיף לבחירת יבואן מזון וציוד פרימיו (no GSC data found)
+  [gsc] Not protected: אוכל מומלץ לכלבים רגישים: המדריך המלא לבחירה נכונה (no GSC data found)
+  [gsc] 2/11 posts have protected titles
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'מזון לחתולים זול'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'מזון לחתולים זול' → 'Cheap cat food'
+  [imagen] Generated desktop image (1277KB)
+  [imagen] Generated mobile image (1285KB)
+  Desktop image: 1277KB
+  Mobile image: 1285KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+^C[Sun 03/01/2026 10:03:01.61] Starting weekly NEW post for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+^C[Sun 03/01/2026 10:04:01.62] Starting weekly NEW post for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+  [context] Scraping products: https://pawly.co.il/cats
+  [context] Scraping blog_index: https://pawly.co.il/blog
+  [context] Scraped 4 pages, 28 internal links, 17 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 40 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 40 keywords
+
+  Top keywords by trend interest:
+    אוכל מומלץ לכלבים גורים: 1
+    מזון לכלבים גוסבי: 1
+    מזון לחתולים זול: 1
+    אוכל מומלץ לכלבים קטנים: 1
+    אוכל לכלבים מומלץ: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'אוכל מומלץ לכלבים גורים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לכלבים גוסבי'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לחתולים זול'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'אוכל מומלץ לכלבים קטנים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'אוכל לכלבים מומלץ'
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  [competitor] Error analyzing https://likeah.co.il/: 525 Server Error: <none> for url: https://likeah.co.il/
+  Competitor avg word count: 857
+
+[Phase 3] Auditing existing Pawly blog posts from MongoDB...
+  15 existing posts analyzed
+  40 keyword topics not yet covered
+  11 posts need updating
+
+[Phase 3b] Fetching Google Search Console data for title protection...
+  [gsc] Fetching performance data (2026-01-29 to 2026-02-26)...
+  [gsc] Got performance data for 88 pages
+  [gsc] PROTECTED: נטורל וודלנד: מזון סופר פרימיום טבעי לכלבים – המדר (position=9.5<=20.0)
+  [gsc] Not protected: נאטורל גרייטנס ופאולי: תזונה אולטרה פרימיום טבעית  (no GSC data found)
+  [gsc] Not protected: פארם נייצ'ר: מזון פרימיום טבעי - הבחירה המושכלת לב (no GSC data found)
+  [gsc] Not protected: איך Pawly מובילה את מהפכת המזון ללא דגנים בישראל ו (no GSC data found)
+  [gsc] Not protected: Pawly: שותפות אסטרטגית לחנויות חיות - יבואן מוביל  (no GSC data found)
+  [gsc] PROTECTED: מדריך מקיף לבעלי חנויות חיות: הגדלת רווחיות עם מזו (position=4.0<=20.0)
+  [gsc] Not protected: איך סידור חנות אביזרים לכלבים מגדיל מכירות? טיפים  (no GSC data found)
+  [gsc] Not protected: Natural Greatness: המדריך המקיף לתזונה טבעית אולטר (no GSC data found)
+  [gsc] Not protected: מהפכה בתזונה הווטרינרית: מזון טבעי לכלבים וחתולים  (no GSC data found)
+  [gsc] Not protected: Pawly: המדריך המקיף לבחירת יבואן מזון וציוד פרימיו (no GSC data found)
+  [gsc] Not protected: אוכל מומלץ לכלבים רגישים: המדריך המקיף של Pawly לב (no GSC data found)
+  [gsc] 2/11 posts have protected titles
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'אוכל מומלץ לכלבים גורים'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'אוכל מומלץ לכלבים גורים' → 'Recommended food for puppies'
+  [imagen] Generated desktop image (1291KB)
+  [imagen] Generated mobile image (1385KB)
+  Desktop image: 1291KB
+  Mobile image: 1385KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Timeout waiting for reply
+  WhatsApp error/timeout, auto-approving
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: אוכל מומלץ לכלבים גורים: המדריך השלם לבחירת מזון פרימיום לגור שלכם עם Pawly
+  [publish] Subtitle: מחפשים אוכל מומלץ לכלבים גורים? גלו את מותגי הפרימיום מאירופה של Pawly, כולל Nat...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: 1eec277c-08a3-43ce-a339-d282a91c1b9e.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: 2ba63d18-7bf4-44fd-a47f-38590629337c.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 69a3fac61659e520c60878a4
+
+  Published successfully!
+  Post ID: 69a3fac61659e520c60878a4
+  Title: אוכל מומלץ לכלבים גורים: המדריך השלם לבחירת מזון פרימיום לגור שלכם עם Pawly
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 28 internal links, 17 products
+  Total keyword universe: 40
+  SERPs analyzed: 5
+  Own posts analyzed: 15
+  New blog post topic: 'אוכל מומלץ לכלבים גורים'
+  Published: Yes
+============================================================
+[Sun 03/01/2026 10:37:29.10] Finished 
+[Sun 03/08/2026 14:44:34.55] Starting weekly NEW post for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+  [context] Scraping products: https://pawly.co.il/cats
+  [context] Scraping blog_index: https://pawly.co.il/blog
+  [context] Scraped 4 pages, 28 internal links, 17 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 40 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 40 keywords
+
+  Top keywords by trend interest:
+    מזון לחתולים 18 ק ג: 1
+    מזון לחתולים מבוגרים: 0
+    חנות אביזרים לכלבים: 0
+    אוכל מומלץ לכלבים בוגרים: 0
+    אביזרים מעוצבים לכלבים: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'מזון לחתולים 18 ק ג'
+    Found 9 results, 0 PAA, 8 related
+  Scraping SERP for: 'מזון לחתולים מבוגרים'
+    Found 10 results, 0 PAA, 8 related
+  Scraping SERP for: 'חנות אביזרים לכלבים'
+    Found 9 results, 0 PAA, 8 related
+  Scraping SERP for: 'אוכל מומלץ לכלבים בוגרים'
+    Found 10 results, 0 PAA, 8 related
+  Scraping SERP for: 'אביזרים מעוצבים לכלבים'
+    Found 10 results, 0 PAA, 6 related
+
+  Known competitors from config: 5
+  Additional from SERP: 7
+  Analyzing 12 competitor pages...
+  [competitor] Error analyzing https://likeah.co.il/: 525 Server Error: <none> for url: https://likeah.co.il/
+  Competitor avg word count: 1135
+
+[Phase 3] Auditing existing Pawly blog posts from MongoDB...
+  19 existing posts analyzed
+  70 keyword topics not yet covered
+  16 posts need updating
+
+[Phase 3b] Fetching Google Search Console data...
+  [gsc] Fetching performance data (2025-12-05 to 2026-03-05)...
+  [gsc] Got performance data for 133 pages
+  [gsc] Fetching page+query data (2025-12-05 to 2026-03-05)...
+  [gsc] Got query data for 32 pages
+  [gsc] low_performer: 3 posts
+  [gsc] not_indexed: 16 posts
+  [gsc] 19 posts in update queue (after GSC prioritization)
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'מזון לחתולים 18 ק ג'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'מזון לחתולים 18 ק ג' → visual concept: 'Large bag of cat food on floor, a cat eating from its nearby bowl'
+  [imagen] Generated image (1064KB) — used for both desktop and mobile
+  Desktop image: 1064KB
+  Mobile image: 1064KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Timeout waiting for reply
+  WhatsApp error/timeout, auto-approving
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: המדריך המלא לבחירת מזון לחתולים 18 ק"ג: איכות פרימיום בכמות משתלמת מבית Pawly
+  [publish] Subtitle: מחפשים מזון לחתולים 18 ק"ג? ב-Pawly תמצאו מזון פרימיום טבעי מאירופה, כולל Natura...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: 5aa0cb55-7241-4da5-8798-9738eea3e20a.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: c1c25353-3d01-4f65-b7b4-2f7ccbffe4e6.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 69ad7740c92e17f947a3ea29
+  [gsc] Sitemap ping failed for https://pawly.co.il/sitemap.xml: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/sc-domain%3Apawly.co.il/sitemaps/https%3A%2F%2Fpawly.co.il%2Fsitemap.xml? returned "Request had insufficient authentication scopes.". Details: "[{'message': 'Insufficient Permission', 'domain': 'global', 'reason': 'insufficientPermissions'}]">
+  [gsc] Could not find sitemap at standard paths for pawly.co.il
+
+  Published successfully!
+  Post ID: 69ad7740c92e17f947a3ea29
+  Title: המדריך המלא לבחירת מזון לחתולים 18 ק"ג: איכות פרימיום בכמות משתלמת מבית Pawly
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 28 internal links, 17 products
+  Total keyword universe: 70
+  SERPs analyzed: 5
+  Own posts analyzed: 19
+  New blog post topic: 'מזון לחתולים 18 ק ג'
+  Published: Yes
+============================================================
+[Sun 03/08/2026 15:18:59.43] Finished 
+[Sun 03/15/2026 10:00:01.10] Starting weekly NEW post for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+  [context] Scraping products: https://pawly.co.il/cats
+  [context] Scraping blog_index: https://pawly.co.il/blog
+  [context] Scraped 4 pages, 28 internal links, 17 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 40 unique keywords after expansion
+
+  Fetching Google Trends data...
+  [trends] Batch error for ['אוכל מומלץ לכלבים עם דגנים', 'אביזרים לכלבים', 'מזון לכלבים הילס', 'מקס סטוק אביזרים לכלבים', 'אוכל מומלץ לכלבים רגישים']: The request failed: Google returned a response with code 429
+  [trends] Batch error for ['אוכל לכלבים מומלץ', 'מזון לחתולים פריסקיז', 'אוכל מומלץ לכלבים קטנים', 'יבואן נטורל וודלנד', 'יבואן נטורל גרייטנס']: The request failed: Google returned a response with code 429
+  Total keyword universe: 40 keywords
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'יבואן מזון לחתולים'
+    Found 10 results, 1 PAA, 8 related
+  Scraping SERP for: 'מזון לכלבים'
+    Found 9 results, 0 PAA, 8 related
+  Scraping SERP for: 'מזון לחתולים'
+    Found 10 results, 1 PAA, 8 related
+  Scraping SERP for: 'יבואן מזון לכלבים'
+    Found 10 results, 0 PAA, 8 related
+  Scraping SERP for: 'יבואן נטורל גרייטנס'
+    Found 10 results, 0 PAA, 8 related
+
+  Known competitors from config: 5
+  Additional from SERP: 7
+  Analyzing 12 competitor pages...
+  [competitor] Error analyzing https://likeah.co.il/: 525 Server Error: <none> for url: https://likeah.co.il/
+  Competitor avg word count: 1557
+
+[Phase 3] Auditing existing Pawly blog posts from MongoDB...
+  20 existing posts analyzed
+  77 keyword topics not yet covered
+  19 posts need updating
+
+[Phase 3b] Fetching Google Search Console data...
+  [gsc] Fetching performance data (2025-12-12 to 2026-03-12)...
+  [gsc] Got performance data for 135 pages
+  [gsc] Fetching page+query data (2025-12-12 to 2026-03-12)...
+  [gsc] Got query data for 37 pages
+  [gsc] low_performer: 8 posts
+  [gsc] not_indexed: 12 posts
+  [impact] Loaded verdicts: 0 posts marked 'hurt' — will be skipped
+  [gsc] 20 posts in update queue (after GSC prioritization)
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'אביזרים לכלבים'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'אביזרים לכלבים' → visual concept: 'Colorful leashes, toys, collars, and bowls for dogs arranged neatly'
+  [imagen] Generated image (1355KB) — used for both desktop and mobile
+  Desktop image: 1355KB
+  Mobile image: 1355KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Result: APPROVED
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: אביזרים לכלבים שישדרגו את חיי חיית המחמד שלכם: המדריך המלא מבית Pawly
+  [publish] Subtitle: גלו את עולם אביזרים לכלבים שישנו את חיי חיית המחמד שלכם. ב-Pawly, יבואן מזון וצי...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: e3884216-6fc2-4428-8e36-90e911cea83f.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: ed4008c3-3946-4e56-a682-e4cf7e6f744e.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 69b667dbd7b5deec60f546ae
+  [gsc] Sitemap ping failed for https://pawly.co.il/sitemap.xml: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/sc-domain%3Apawly.co.il/sitemaps/https%3A%2F%2Fpawly.co.il%2Fsitemap.xml? returned "Request had insufficient authentication scopes.". Details: "[{'message': 'Insufficient Permission', 'domain': 'global', 'reason': 'insufficientPermissions'}]">
+  [gsc] Could not find sitemap at standard paths for pawly.co.il
+
+  Published successfully!
+  Post ID: 69b667dbd7b5deec60f546ae
+  Title: אביזרים לכלבים שישדרגו את חיי חיית המחמד שלכם: המדריך המלא מבית Pawly
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 28 internal links, 17 products
+  Total keyword universe: 77
+  SERPs analyzed: 5
+  Own posts analyzed: 20
+  New blog post topic: 'אביזרים לכלבים'
+  Published: Yes
+============================================================
+[Sun 03/15/2026 10:03:42.23] Finished 
+[Sun 03/15/2026 10:04:01.42] Starting weekly NEW post for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+  [context] Scraping products: https://pawly.co.il/cats
+  [context] Scraping blog_index: https://pawly.co.il/blog
+  [context] Scraped 4 pages, 27 internal links, 17 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 40 unique keywords after expansion
+
+  Fetching Google Trends data...
+  [trends] Batch error for ['מזון לכלבים מומלץ', 'מזון לכלבים', 'מזון לחתולים זול', 'מזון לחתולים מיטו', 'אביזרים מעוצבים לכלבים']: The request failed: Google returned a response with code 429
+  [trends] Batch error for ['אוכל מומלץ לכלבים גורים', 'מקס סטוק אביזרים לכלבים', 'יבואן מזון לכלבים', 'מזון לכלבים היפואלרגני', 'חנות אביזרים לכלבים']: The request failed: Google returned a response with code 429
+  Total keyword universe: 40 keywords
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'יבואן מזון לחתולים'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%99%D7%91%D7%95%D7%90%D7%9F+%D7%9E%D7%96%D7%95%D7%9F+%D7%9C%D7%97%D7%AA%D7%95%D7%9C%D7%99%D7%9D&hl=he&gl=il&num=10&sei=FGi2aYLPBrbm7_UPqeuLwQQ' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לכלבים'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%9E%D7%96%D7%95%D7%9F+%D7%9C%D7%9B%D7%9C%D7%91%D7%99%D7%9D&hl=he&gl=il&num=10&sei=JGi2abTdAoP_7_UP8v20sAI' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'מזון לחתולים'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%9E%D7%96%D7%95%D7%9F+%D7%9C%D7%97%D7%AA%D7%95%D7%9C%D7%99%D7%9D&hl=he&gl=il&num=10&sei=NGi2aZfRA5797_UPgOGl8Qg' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'יבואן מזון לכלבים'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%99%D7%91%D7%95%D7%90%D7%9F+%D7%9E%D7%96%D7%95%D7%9F+%D7%9C%D7%9B%D7%9C%D7%91%D7%99%D7%9D&hl=he&gl=il&num=10&sei=Q2i2acDjPPT97_UPtNzKiQY' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'יבואן נטורל גרייטנס'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%99%D7%91%D7%95%D7%90%D7%9F+%D7%A0%D7%98%D7%95%D7%A8%D7%9C+%D7%92%D7%A8%D7%99%D7%99%D7%98%D7%A0%D7%A1&hl=he&gl=il&num=10&sei=U2i2adPxM__97_UPz5qH6Qo' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  [competitor] Error analyzing https://likeah.co.il/: 525 Server Error: <none> for url: https://likeah.co.il/
+  Competitor avg word count: 862
+
+[Phase 3] Auditing existing Pawly blog posts from MongoDB...
+  21 existing posts analyzed
+  40 keyword topics not yet covered
+  18 posts need updating
+
+[Phase 3b] Fetching Google Search Console data...
+  [gsc] Fetching performance data (2025-12-12 to 2026-03-12)...
+  [gsc] Got performance data for 135 pages
+  [gsc] Fetching page+query data (2025-12-12 to 2026-03-12)...
+  [gsc] Got query data for 37 pages
+  [gsc] low_performer: 8 posts
+  [gsc] not_indexed: 13 posts
+  [impact] Loaded verdicts: 0 posts marked 'hurt' — will be skipped
+  [gsc] 21 posts in update queue (after GSC prioritization)
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'מזון לכלבים מומלץ'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'מזון לכלבים מומלץ' → visual concept: 'Owner fills bowl with quality dry food for happy dog'
+  [imagen] Generated image (1331KB) — used for both desktop and mobile
+  Desktop image: 1331KB
+  Mobile image: 1331KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Result: APPROVED
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: מזון לכלבים מומלץ: המדריך המלא לבחירת התזונה הטובה ביותר לחברכם הטוב ביותר
+  [publish] Subtitle: מחפשים מזון לכלבים מומלץ שיעניק לבן משפחתכם פרווה מבריקה ובריאות איתנה? פאולי מב...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: 33fcf219-34fb-4156-85c6-df4fde0296a2.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/pawlyLogo.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: d5b7feb8-d24d-4210-aa3c-dd7245094cb0.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 69b668cdd7851c826f17a2f4
+  [gsc] Sitemap ping failed for https://pawly.co.il/sitemap.xml: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/sc-domain%3Apawly.co.il/sitemaps/https%3A%2F%2Fpawly.co.il%2Fsitemap.xml? returned "Request had insufficient authentication scopes.". Details: "[{'message': 'Insufficient Permission', 'domain': 'global', 'reason': 'insufficientPermissions'}]">
+  [gsc] Could not find sitemap at standard paths for pawly.co.il
+
+  Published successfully!
+  Post ID: 69b668cdd7851c826f17a2f4
+  Title: מזון לכלבים מומלץ: המדריך המלא לבחירת התזונה הטובה ביותר לחברכם הטוב ביותר
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 27 internal links, 17 products
+  Total keyword universe: 40
+  SERPs analyzed: 5
+  Own posts analyzed: 21
+  New blog post topic: 'מזון לכלבים מומלץ'
+  Published: Yes
+============================================================
+[Sun 03/15/2026 10:07:43.90] Finished 

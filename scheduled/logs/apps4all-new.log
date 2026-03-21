@@ -1,0 +1,349 @@
+[Sun 02/22/2026 22:17:08.66] Starting weekly NEW post for Apps4All 
+============================================================
+  Apps4All SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Apps4All website for context...
+  [context] Scraping homepage: https://apps4all.net
+  [context] Scraping portfolio: https://apps4all.net/apps
+  [context] Scraped 2 pages, 7 internal links, 0 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 27 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 27 keywords
+
+  Top keywords by trend interest:
+    קורס פיתוח אפליקציות מובייל: 1
+    פיתוח אפליקציות קורס: 0
+    בניית מערכת ניהול לעסק: 0
+    פיתוח אפליקציות דרושים: 0
+    חברת פיתוח תוכנה בישראל: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'קורס פיתוח אפליקציות מובייל'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'פיתוח אפליקציות קורס'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'בניית מערכת ניהול לעסק'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'פיתוח אפליקציות דרושים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'חברת פיתוח תוכנה בישראל'
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  [competitor] Error analyzing https://gapps.co.il/: 500 Server Error: Internal Server Error for url: https://gapps.co.il/
+  Competitor avg word count: 851
+
+[Phase 3] Auditing existing Apps4All blog posts from MongoDB...
+  4 existing posts analyzed
+  27 keyword topics not yet covered
+  4 posts need updating
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'קורס פיתוח אפליקציות מובייל'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'קורס פיתוח אפליקציות מובייל' → 'Mobile Application Development Course'
+  [imagen] Generated desktop image (1071KB)
+  [imagen] Generated mobile image (1099KB)
+  Desktop image: 1071KB
+  Mobile image: 1099KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+Exception in thread Thread-1 (_readerthread):
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 1044, in _bootstrap_inner
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\threading.py", line 995, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\subprocess.py", line 1615, in _readerthread
+    buffer.append(fh.read())
+                  ~~~~~~~^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3312.0_x64__qbz5n2kfra8p0\Lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x90 in position 57: character maps to <undefined>
+  [whatsapp] Error: 'NoneType' object has no attribute 'strip'
+  WhatsApp error/timeout, auto-approving
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: קורס פיתוח אפליקציות מובייל: האם כדאי לבנות לבד או להפקיד בידי מומחים?
+  [publish] Subtitle: חולמים לפתח אפליקציה? גלו את הדרך הנכונה לעסק שלכם – ללמוד בקורס פיתוח אפליקציות...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/APPS4ALL_text.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: 7be87fdc-a225-43b7-bb8f-c669525bb41b.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/APPS4ALL_text.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: cfcdc5b4-7650-4345-9265-761240e821eb.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 699b64f95b4a1c63766eabb1
+
+  Published successfully!
+  Post ID: 699b64f95b4a1c63766eabb1
+  Title: קורס פיתוח אפליקציות מובייל: האם כדאי לבנות לבד או להפקיד בידי מומחים?
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 7 internal links, 0 products
+  Total keyword universe: 27
+  SERPs analyzed: 5
+  Own posts analyzed: 4
+  New blog post topic: 'קורס פיתוח אפליקציות מובייל'
+  Published: Yes
+============================================================
+[Sun 02/22/2026 22:20:12.03] Finished 
+[Sun 03/01/2026 12:00:00.66] Starting weekly NEW post for Apps4All 
+============================================================
+  Apps4All SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Apps4All website for context...
+  [context] Scraping homepage: https://apps4all.net
+^C[Sun 03/08/2026 14:44:34.58] Starting weekly NEW post for Apps4All 
+============================================================
+  Apps4All SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Apps4All website for context...
+  [context] Scraping homepage: https://apps4all.net
+  [context] Scraping portfolio: https://apps4all.net/apps
+  [context] Error scraping https://apps4all.net/apps: 404 Client Error: Not Found for url: https://www.apps4all.net/apps
+  [context] Scraped 2 pages, 5 internal links, 0 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 26 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 26 keywords
+
+  Top keywords by trend interest:
+    פיתוח אפליקציות דרושים: 1
+    סוכני AI לעסקים: 1
+    פיתוח אפליקציות ללא קוד: 1
+    פיתוח אפליקציות חנות אונליין: 0
+    פיתוח אפליקציות בחינם: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'פיתוח אפליקציות דרושים'
+    Found 10 results, 0 PAA, 8 related
+  Scraping SERP for: 'סוכני AI לעסקים'
+    Found 9 results, 0 PAA, 8 related
+  Scraping SERP for: 'פיתוח אפליקציות ללא קוד'
+    Found 9 results, 0 PAA, 8 related
+  Scraping SERP for: 'פיתוח אפליקציות חנות אונליין'
+    Found 10 results, 0 PAA, 8 related
+  Scraping SERP for: 'פיתוח אפליקציות בחינם'
+    Found 8 results, 0 PAA, 8 related
+
+  Known competitors from config: 5
+  Additional from SERP: 7
+  Analyzing 12 competitor pages...
+  [competitor] Error analyzing https://gapps.co.il/: 500 Server Error: Internal Server Error for url: https://gapps.co.il/
+  Competitor avg word count: 1425
+
+[Phase 3] Auditing existing Apps4All blog posts from MongoDB...
+  6 existing posts analyzed
+  55 keyword topics not yet covered
+  6 posts need updating
+
+[Phase 3b] Fetching Google Search Console data...
+  [gsc] Fetching performance data (2025-12-05 to 2026-03-05)...
+
+  [gsc] ⚠️  BLOCKING UPDATES — GSC fetch failed: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fapps4all.net%2F/searchAnalytics/query?alt=json returned "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.". Details: "[{'message': "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.", 'domain': 'global', 'reason': 'forbidden'}]">
+  [gsc] Cannot safely update posts without knowing which ones are ranking.
+  [gsc] Fix the GSC connection and re-run. Posts with existing rankings could be damaged.
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\orchestrator.py", line 478, in run_research
+    gsc_data = fetch_gsc_performance(config, days=90)
+  File "C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\tools\search_console.py", line 97, in fetch_gsc_performance
+    ).execute()
+      ~~~~~~~^^
+  File "C:\Users\user\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\googleapiclient\_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\googleapiclient\http.py", line 938, in execute
+    raise HttpError(resp, content, uri=self.uri)
+googleapiclient.errors.HttpError: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fapps4all.net%2F/searchAnalytics/query?alt=json returned "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.". Details: "[{'message': "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.", 'domain': 'global', 'reason': 'forbidden'}]">
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'פיתוח אפליקציות דרושים'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'פיתוח אפליקציות דרושים' → visual concept: 'Developers creating mobile apps on computers in a modern office'
+  [imagen] Generated image (1195KB) — used for both desktop and mobile
+  Desktop image: 1195KB
+  Mobile image: 1195KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Result: 
+  WhatsApp error/timeout, auto-approving
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: מעבר ל"פיתוח אפליקציות דרושים": למה שותף טכנולוגי מקצה לקצה הוא העתיד של העסק שלך
+  [publish] Subtitle: מחפשים צוות ל[פיתוח אפליקציות דרושים] לעסק? גלו למה שותף אסטרטגי כמו Apps4All עד...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/APPS4ALL_text.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: 00b770b0-a53b-447e-ae96-bc0e843672eb.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/APPS4ALL_text.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: 57bcb3e2-eb47-4d14-832e-3e601296581a.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 69ad7006f40c11a99f2fe180
+  [gsc] Sitemap ping failed for https://apps4all.net/sitemap.xml: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fapps4all.net%2F/sitemaps/https%3A%2F%2Fapps4all.net%2Fsitemap.xml? returned "Request had insufficient authentication scopes.". Details: "[{'message': 'Insufficient Permission', 'domain': 'global', 'reason': 'insufficientPermissions'}]">
+  [gsc] Could not find sitemap at standard paths for apps4all.net
+
+  Published successfully!
+  Post ID: 69ad7006f40c11a99f2fe180
+  Title: מעבר ל"פיתוח אפליקציות דרושים": למה שותף טכנולוגי מקצה לקצה הוא העתיד של העסק שלך
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 5 internal links, 0 products
+  Total keyword universe: 55
+  SERPs analyzed: 5
+  Own posts analyzed: 6
+  New blog post topic: 'פיתוח אפליקציות דרושים'
+  Published: Yes
+============================================================
+[Sun 03/08/2026 14:48:09.34] Finished 
+[Sun 03/15/2026 12:00:00.96] Starting weekly NEW post for Apps4All 
+============================================================
+  Apps4All SEO BLOG ENGINE — NEW POST
+============================================================
+
+[Phase 0] Scraping Apps4All website for context...
+  [context] Scraping homepage: https://apps4all.net
+  [context] Scraping portfolio: https://apps4all.net/apps
+  [context] Error scraping https://apps4all.net/apps: 404 Client Error: Not Found for url: https://www.apps4all.net/apps
+  [context] Scraped 2 pages, 5 internal links, 0 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 26 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 26 keywords
+
+  Top keywords by trend interest:
+    פיתוח אתרים ואפליקציות: 2
+    אינטגרציות עסקיות API: 1
+    חברת פיתוח תוכנה בישראל: 1
+    סוכני AI לעסקים: 0
+    פיתוח אפליקציות בחינם: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'פיתוח אתרים ואפליקציות'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%A4%D7%99%D7%AA%D7%95%D7%97+%D7%90%D7%AA%D7%A8%D7%99%D7%9D+%D7%95%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%95%D7%AA&hl=he&gl=il&num=10&sei=V4O2acSbDM2xi-gPn5eIkAE' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'אינטגרציות עסקיות API'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%90%D7%99%D7%A0%D7%98%D7%92%D7%A8%D7%A6%D7%99%D7%95%D7%AA+%D7%A2%D7%A1%D7%A7%D7%99%D7%95%D7%AA+API&hl=he&gl=il&num=10&sei=Z4O2afXfC7fmi-gPraqQkAc' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'חברת פיתוח תוכנה בישראל'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%97%D7%91%D7%A8%D7%AA+%D7%A4%D7%99%D7%AA%D7%95%D7%97+%D7%AA%D7%95%D7%9B%D7%A0%D7%94+%D7%91%D7%99%D7%A9%D7%A8%D7%90%D7%9C&hl=he&gl=il&num=10&sei=doO2aZ_cOYOki-gPsImo8Aw' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'סוכני AI לעסקים'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%A1%D7%95%D7%9B%D7%A0%D7%99+AI+%D7%9C%D7%A2%D7%A1%D7%A7%D7%99%D7%9D&hl=he&gl=il&num=10&sei=hoO2afCBNeuri-gP9I2OsAg' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'פיתוח אפליקציות בחינם'
+  [serp-debug] 0 results — page title: 'https://www.google.co.il/search?q=%D7%A4%D7%99%D7%AA%D7%95%D7%97+%D7%90%D7%A4%D7%9C%D7%99%D7%A7%D7%A6%D7%99%D7%95%D7%AA+%D7%91%D7%97%D7%99%D7%A0%D7%9D&hl=he&gl=il&num=10&sei=loO2adG4J6uRi-gPtaWNqQY' | screenshot: output/serp_debug.png
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  [competitor] Error analyzing https://gapps.co.il/: 500 Server Error: Internal Server Error for url: https://gapps.co.il/
+  Competitor avg word count: 848
+
+[Phase 3] Auditing existing Apps4All blog posts from MongoDB...
+  7 existing posts analyzed
+  26 keyword topics not yet covered
+  7 posts need updating
+
+[Phase 3b] Fetching Google Search Console data...
+  [gsc] Fetching performance data (2025-12-12 to 2026-03-12)...
+
+  [gsc] ⚠️  BLOCKING UPDATES — GSC fetch failed: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fapps4all.net%2F/searchAnalytics/query?alt=json returned "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.". Details: "[{'message': "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.", 'domain': 'global', 'reason': 'forbidden'}]">
+  [gsc] Cannot safely update posts without knowing which ones are ranking.
+  [gsc] Fix the GSC connection and re-run. Posts with existing rankings could be damaged.
+Traceback (most recent call last):
+  File "C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\orchestrator.py", line 478, in run_research
+    gsc_data = fetch_gsc_performance(config, days=90)
+  File "C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\tools\search_console.py", line 97, in fetch_gsc_performance
+    ).execute()
+      ~~~~~~~^^
+  File "C:\Users\user\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\googleapiclient\_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "C:\Users\user\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\googleapiclient\http.py", line 938, in execute
+    raise HttpError(resp, content, uri=self.uri)
+googleapiclient.errors.HttpError: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fapps4all.net%2F/searchAnalytics/query?alt=json returned "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.". Details: "[{'message': "User does not have sufficient permission for site 'https://apps4all.net/'. See also: https://support.google.com/webmasters/answer/2451999.", 'domain': 'global', 'reason': 'forbidden'}]">
+
+[Phase 4] Generating new blog post with Gemini...
+
+  Generating new blog post for: 'פיתוח אתרים ואפליקציות'
+
+[Phase 5] Generating blog images...
+  [imagen] Topic: 'פיתוח אתרים ואפליקציות' → visual concept: 'Programmer typing code on laptop, large screens show evolving website and app layouts'
+  [imagen] Generated image (1228KB) — used for both desktop and mobile
+  Desktop image: 1228KB
+  Mobile image: 1228KB
+
+[Phase 6] Sending post for WhatsApp review...
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Result: TIMEOUT
+  WhatsApp error/timeout, auto-approving
+
+[Phase 7] Publishing to MongoDB + Supabase...
+  [publish] Parsing Gemini output...
+  [publish] Title: פיתוח אתרים ואפליקציות לעסקים: המדריך המלא להצלחה דיגיטלית עם Apps4All
+  [publish] Subtitle: זקוקים לפתרונות פיתוח אתרים ואפליקציות חדשניים? Apps4All מציעה מערכות מקצה לקצה,...
+  [publish] Using userId: 67bdb3a64bb3d4d1e1c1aa08
+  [publish] Uploading desktop image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/APPS4ALL_text.png
+  [logo] Logo composited successfully
+  [publish] Desktop image: 64c94ea4-8584-4d1c-9dfe-fad9cdf34f4b.jpg
+  [publish] Uploading mobile image to Supabase...
+  [logo] Using logo: C:\Users\user\Desktop\work\seo-tools\seo-blog-engine\companies_logos/APPS4ALL_text.png
+  [logo] Logo composited successfully
+  [publish] Mobile image: a1161184-4d83-4361-b2bc-46142a8cf991.jpg
+  [publish] Inserting blog post to MongoDB...
+  [publish] Post inserted with _id: 69b68b0d7811c179dc36656b
+  [gsc] Sitemap ping failed for https://apps4all.net/sitemap.xml: <HttpError 403 when requesting https://searchconsole.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fapps4all.net%2F/sitemaps/https%3A%2F%2Fapps4all.net%2Fsitemap.xml? returned "Request had insufficient authentication scopes.". Details: "[{'message': 'Insufficient Permission', 'domain': 'global', 'reason': 'insufficientPermissions'}]">
+  [gsc] Could not find sitemap at standard paths for apps4all.net
+
+  Published successfully!
+  Post ID: 69b68b0d7811c179dc36656b
+  Title: פיתוח אתרים ואפליקציות לעסקים: המדריך המלא להצלחה דיגיטלית עם Apps4All
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 5 internal links, 0 products
+  Total keyword universe: 26
+  SERPs analyzed: 5
+  Own posts analyzed: 7
+  New blog post topic: 'פיתוח אתרים ואפליקציות'
+  Published: Yes
+============================================================
+[Sun 03/15/2026 12:33:52.75] Finished 

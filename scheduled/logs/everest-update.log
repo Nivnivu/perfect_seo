@@ -1,0 +1,240 @@
+[Sun 03/01/2026 14:00:01.02] Starting monthly UPDATE for Everest 
+============================================================
+  Everest SEO BLOG ENGINE — UPDATE EXISTING POSTS
+============================================================
+
+[Phase 0] Scraping Everest website for context...
+  [context] Scraping homepage: https://www.ecstudy.co.il/
+  [context] Scraping programs: https://www.ecstudy.co.il/programs
+  [context] Scraping counseling: https://www.ecstudy.co.il/counseling
+  [context] Scraped 3 pages, 18 internal links, 0 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 101 unique keywords after expansion
+
+  Fetching Google Trends data...
+  [trends] Batch error for ['קורס הנהלת חשבונות', 'קורס רכב ציבורי בירושלים', 'קורס רכב ציבורי בצפון', 'קורס חשבי שכר לשכת רואי חשבון', 'קורס מורה נהיגה']: The request failed: Google returned a response with code 429
+  [trends] Batch error for ['קורס הנהלת חשבונות סוג 3', 'קורסים מקצועיים בדרום', 'קורס מנהל עבודה מקוצר', 'קורס מנהל עבודה בבניין ללא ניסיון', 'קורסים קצרים בצפון']: The request failed: Google returned a response with code 429
+  Total keyword universe: 101 keywords
+
+  Top keywords by trend interest:
+    קורס רכב ציבורי בצפון: 2
+    קורס חשבי שכר לשכת רואי חשבון: 1
+    קורס הנהלת חשבונות: 1
+    קורס רכב ציבורי בירושלים: 0
+    קורס מורה נהיגה: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'קורס רכב ציבורי בצפון'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'קורס חשבי שכר לשכת רואי חשבון'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'קורס הנהלת חשבונות'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'קורס רכב ציבורי בירושלים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'קורס מורה נהיגה'
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  Competitor avg word count: 223
+
+[Phase 3] Auditing existing Everest blog posts from MongoDB...
+  28 existing posts analyzed
+  101 keyword topics not yet covered
+  28 posts need updating
+
+[Phase 3b] Fetching Google Search Console data...
+  [gsc] Fetching performance data (2025-11-28 to 2026-02-26)...
+  [gsc] Got performance data for 39 pages
+  [gsc] Fetching page+query data (2025-11-28 to 2026-02-26)...
+  [gsc] Got query data for 34 pages
+  [gsc] low_performer: 9 posts
+  [gsc] not_indexed: 1 posts
+  [gsc] page2_opportunity: 17 posts
+  [gsc] top_performer: 1 posts
+  [gsc] Skipping 1 top-performing posts (already on page 1 with clicks)
+  [gsc] 27 posts in update queue (after GSC prioritization)
+
+[Phase 4] Rewriting posts that need improvement...
+  Update history: 28 posts previously updated
+
+  ────────────────────────────────────────
+  Post: קורס מנהל עבודה בבנייה במכללת אוורסט: צעד בטוח לקריירה מצליחה!
+  MongoDB _id: 681fa3bf9ad6a7d681148e98
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:58:16.093723
+
+  ────────────────────────────────────────
+  Post: קורס מלווה הסעות בחינוך המיוחד במכללת אוורסט: צעד לעתיד משמעותי
+  MongoDB _id: 681fb680c961153a9bc83c7e
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:58:25.686781
+
+  ────────────────────────────────────────
+  Post: קורס נהיגת משא כבד 444 במכללת אוורסט: הצעד הבטוח לקריירה משגשגת
+  MongoDB _id: 681f7616b37252e1995b8331
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:39:05.680498
+
+  ────────────────────────────────────────
+  Post: קורס רכב ציבורי במכללת אוורסט: הדרך שלך לקריירה בטוחה ומתגמלת
+  MongoDB _id: 681fb5b078e17eb2aa0e7b21
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:21:48.705824
+
+  ────────────────────────────────────────
+  Post: קורס מורה נהיגה מוסמך במכללת אוורסט - פתח דלת לקריירה מצליחה!
+  MongoDB _id: 68fa1786f4b36e2343234367
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:24:44.934153
+
+  ────────────────────────────────────────
+  Post: קורס מוביל קצר במכללת אוורסט: הצעד הראשון לקריירה מצליחה בהובלות
+  MongoDB _id: 68fa18448be0ad9d1f7e1b02
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:38:46.526701
+
+  ────────────────────────────────────────
+  Post: קורס קצין בטיחות בתעבורה במכללת אוורסט: מסלול הקריירה שלך מתחיל כאן!
+  MongoDB _id: 690095486af124f23cf0d342
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:05:04.737672
+
+  ────────────────────────────────────────
+  Post: קורס משא כבד במכללת אוורסט: הצעד שלך לקריירה מצליחה
+  MongoDB _id: 69009592b112a5080020d3b9
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:51:57.843617
+
+  ────────────────────────────────────────
+  Post: קורס רכב ציבורי במכללת אוורסט: הצעד הבא בקריירה שלך
+  MongoDB _id: 690095a46af124f23cf0d344
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T17:37:21.258076
+
+  ────────────────────────────────────────
+  Post: קורס MS Project במכללת אוורסט: ניהול פרויקטים מקצועי
+  MongoDB _id: 690095b37c8678d7d91303c4
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:52:07.418863
+
+  ────────────────────────────────────────
+  Post: קורס מנהל עבודה בבניין: הצעד הבא שלך בעולם הבנייה | מכללת אוורסט
+  MongoDB _id: 69009658b112a5080020d3ba
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:11:27.702723
+
+  ────────────────────────────────────────
+  Post: קורס SolidWorks במכללת אוורסט: צעד לעבר קריירה בהנדסה ועיצוב
+  MongoDB _id: 6900966781681d841ca7e249
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:33:06.568172
+
+  ────────────────────────────────────────
+  Post: קורס קריאת תוכניות בבנייה במכללת אוורסט: מפתח להצלחה בענף הבנייה
+  MongoDB _id: 690096766af124f23cf0d346
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:32:54.159162
+
+  ────────────────────────────────────────
+  Post: קורס מנהל עבודה בבנייה: מסלול מיוחד למהנדסים והנדסאים במכללת אוורסט
+  MongoDB _id: 690096946af124f23cf0d348
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:24:35.379825
+
+  ────────────────────────────────────────
+  Post: קורס מנהל עבודה בבנייה: תעודת הסמכה יוקרתית מבית מכללת אוורסט
+  MongoDB _id: 690096d06af124f23cf0d349
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:58:06.473564
+
+  ────────────────────────────────────────
+  Post: קורס מורה נהיגה במכללת אוורסט: הצעד הבטוח לקריירה מצליחה
+  MongoDB _id: 690096f96af124f23cf0d34a
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T17:37:30.806007
+
+  ────────────────────────────────────────
+  Post: קורס חשב שכר במכללת אוורסט: הצעד הבא בקריירה שלך
+  MongoDB _id: 6900970b81681d841ca7e24a
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:32:44.592523
+
+  ────────────────────────────────────────
+  Post: קורס הנהלת חשבונות במכללת אוורסט: פתח לעולם הפיננסים
+  MongoDB _id: 681fb4ba78e17eb2aa0e7b20
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:21:58.281621
+
+  ────────────────────────────────────────
+  Post: קורס נהג אוטובוס זעיר פרטי במכללת אוורסט: הצעד שלך לקריירה בטוחה
+  MongoDB _id: 68f9e650dd34ba98d5d4a0e9
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:04:55.178390
+
+  ────────────────────────────────────────
+  Post: קורס אוטובוס זעיר פרטי במכללת אוורסט: הצעד הראשון לקריירה מבטיחה
+  MongoDB _id: 6900955b7c8678d7d91303c3
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:38:56.116776
+
+  ────────────────────────────────────────
+  Post: קורס נהג אוטובוס זעיר ציבורי במכללת אוורסט: הדרך שלך לקריירה בתחבורה ציבורית
+  MongoDB _id: 6900956b6af124f23cf0d343
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:52:16.973564
+
+  ────────────────────────────────────────
+  Post: קורס חיווט חשמל
+  MongoDB _id: 690095e55e799d8147b54b05
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T17:10:35.947835
+
+  ────────────────────────────────────────
+  Post: קורס חומרים מסוכנים תעבורה (חומ"ס): הכשרה מקצועית במכללת אוורסט
+  MongoDB _id: 690096856af124f23cf0d347
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:11:18.132741
+
+  ────────────────────────────────────────
+  Post: קורס מחנכות שנות יונקות 1+2 במכללת אוורסט: הצעד הראשון שלך להצלחה!
+  MongoDB _id: 690096e55e799d8147b54b06
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T17:10:45.570734
+
+  ────────────────────────────────────────
+  Post: קורס הנהלת חשבונות סוג 3 במכללת אוורסט: צעד משמעותי לקריירה מצליחה!
+  MongoDB _id: 6900971fb112a5080020d3bb
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T15:24:25.755636
+
+  ────────────────────────────────────────
+  Post: קורס הנהלת חשבונות 1+2 במכללת אוורסט: הצעד הראשון לקריירה מצליחה
+  MongoDB _id: 6900973581681d841ca7e24b
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:21:39.073407
+
+  ────────────────────────────────────────
+  Post: קורס AutoCAD במכללת אוורסט: צעד ראשון לקריירה בעיצוב הנדסי
+  MongoDB _id: 690095c36af124f23cf0d345
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:11:37.262991
+
+  No posts could be rewritten.
+[Sun 03/01/2026 14:01:29.15] Finished 
+[Wed 03/11/2026 21:29:01.72] Starting monthly UPDATE for Everest 
+============================================================
+  Everest SEO BLOG ENGINE — UPDATE EXISTING POSTS
+============================================================
+
+[Phase 0] Scraping Everest website for context...
+  [context] Scraping homepage: https://www.ecstudy.co.il/
+  [context] Scraping programs: https://www.ecstudy.co.il/programs
+  [context] Scraping counseling: https://www.ecstudy.co.il/counseling
+  [context] Scraped 3 pages, 19 internal links, 0 products
+
+[Phase 1] Expanding keywords...
+^C

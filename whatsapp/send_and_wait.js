@@ -49,6 +49,13 @@ const client = new Client({
 let messageSent = false;
 let timeoutHandle;
 
+// If WhatsApp doesn't reach 'ready' within 90 seconds, bail out
+const initTimeout = setTimeout(() => {
+    console.error('[WhatsApp] Initialization timeout — session may be expired');
+    console.log('ERROR');
+    process.exit(1);
+}, 90000);
+
 client.on('qr', (qr) => {
     console.error('[WhatsApp] Scan QR code to authenticate:');
     qrcode.generate(qr, { small: true });
@@ -59,6 +66,7 @@ client.on('authenticated', () => {
 });
 
 client.on('ready', async () => {
+    clearTimeout(initTimeout);
     console.error('[WhatsApp] Client ready');
 
     try {
@@ -81,10 +89,6 @@ client.on('ready', async () => {
 
 client.on('message', async (msg) => {
     if (!messageSent) return;
-
-    // Only listen for messages from the target phone
-    const fromId = msg.from;
-    if (fromId !== chatId) return;
 
     const body = msg.body.trim();
     clearTimeout(timeoutHandle);

@@ -1,0 +1,165 @@
+[Sun 03/01/2026 10:00:00.78] Starting monthly UPDATE for Pawly 
+============================================================
+  Pawly SEO BLOG ENGINE — UPDATE EXISTING POSTS
+============================================================
+
+[Phase 0] Scraping Pawly website for context...
+  [context] Scraping homepage: https://pawly.co.il
+  [context] Scraping products: https://pawly.co.il/dogs
+  [context] Scraping products: https://pawly.co.il/cats
+  [context] Scraping blog_index: https://pawly.co.il/blog
+  [context] Scraped 4 pages, 28 internal links, 17 products
+
+[Phase 1] Expanding keywords...
+  Autocomplete: 40 unique keywords after expansion
+
+  Fetching Google Trends data...
+  Total keyword universe: 40 keywords
+
+  Top keywords by trend interest:
+    יבואן נטורל וודלנד: 1
+    אוכל מומלץ לכלבים קטנים: 1
+    אוכל מומלץ לכלבים גורים: 1
+    יבואן מזון לחתולים: 0
+    אביזרים לכלבים: 0
+
+[Phase 2] Analyzing SERPs and competitors...
+  Scraping SERP for: 'יבואן נטורל וודלנד'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'אוכל מומלץ לכלבים קטנים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'אוכל מומלץ לכלבים גורים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'יבואן מזון לחתולים'
+    Found 0 results, 0 PAA, 0 related
+  Scraping SERP for: 'אביזרים לכלבים'
+    Found 0 results, 0 PAA, 0 related
+
+  Known competitors from config: 5
+  Additional from SERP: 0
+  Analyzing 5 competitor pages...
+  [competitor] Error analyzing https://likeah.co.il/: 525 Server Error: <none> for url: https://likeah.co.il/
+  Competitor avg word count: 857
+
+[Phase 3] Auditing existing Pawly blog posts from MongoDB...
+  15 existing posts analyzed
+  40 keyword topics not yet covered
+  11 posts need updating
+
+[Phase 3b] Fetching Google Search Console data for title protection...
+  [gsc] Fetching performance data (2026-01-29 to 2026-02-26)...
+  [gsc] Got performance data for 88 pages
+  [gsc] PROTECTED: נטורל וודלנד: מזון סופר פרימיום טבעי לכלבים – המדר (position=9.5<=20.0)
+  [gsc] Not protected: נאטורל גרייטנס ופאולי: תזונה אולטרה פרימיום טבעית  (no GSC data found)
+  [gsc] Not protected: פארם נייצ'ר: מזון פרימיום טבעי - הבחירה המושכלת לב (no GSC data found)
+  [gsc] Not protected: איך Pawly מובילה את מהפכת המזון ללא דגנים בישראל ו (no GSC data found)
+  [gsc] Not protected: Pawly: שותפות אסטרטגית לחנויות חיות - יבואן מוביל  (no GSC data found)
+  [gsc] PROTECTED: מדריך מקיף לבעלי חנויות חיות: הגדלת רווחיות עם מזו (position=4.0<=20.0)
+  [gsc] Not protected: איך סידור חנות אביזרים לכלבים מגדיל מכירות? טיפים  (no GSC data found)
+  [gsc] Not protected: Natural Greatness: המדריך המקיף לתזונה טבעית אולטר (no GSC data found)
+  [gsc] Not protected: מהפכה בתזונה הווטרינרית: מזון טבעי לכלבים וחתולים  (no GSC data found)
+  [gsc] Not protected: Pawly: המדריך המקיף לבחירת יבואן מזון וציוד פרימיו (no GSC data found)
+  [gsc] Not protected: אוכל מומלץ לכלבים רגישים: המדריך המלא לבחירה נכונה (no GSC data found)
+  [gsc] 2/11 posts have protected titles
+
+[Phase 4] Rewriting posts that need improvement...
+  Update history: 12 posts previously updated
+
+  ────────────────────────────────────────
+  Post: נטורל וודלנד: מזון סופר פרימיום טבעי לכלבים – המדריך המלא | Pawly
+  MongoDB _id: 67d2fbcc03c6d4fac4418129
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T14:02:33.124802
+
+  ────────────────────────────────────────
+  Post: נאטורל גרייטנס ופאולי: תזונה אולטרה פרימיום טבעית ובריאה לחיות המחמד שלכם
+  MongoDB _id: 67dac926fdcbd6e401949777
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T14:02:22.481779
+
+  ────────────────────────────────────────
+  Post: פארם נייצ'ר: מזון פרימיום טבעי - הבחירה המושכלת לבריאות הכלב והחתול שלך מבית Pawly
+  MongoDB _id: 67daca8742f6dd2970f98984
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:07:34.178617
+
+  ────────────────────────────────────────
+  Post: איך Pawly מובילה את מהפכת המזון ללא דגנים בישראל ומזניקה את החנות שלך?
+  MongoDB _id: 67f26f4dae0954d11064ecd7
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:13:39.815108
+
+  ────────────────────────────────────────
+  Post: Pawly: שותפות אסטרטגית לחנויות חיות - יבואן מוביל של מזון לכלבים וחתולים
+  MongoDB _id: 68753bd2e7f74274c2063d91
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:07:23.432480
+
+  ────────────────────────────────────────
+  Post: מדריך מקיף לבעלי חנויות חיות: הגדלת רווחיות עם מזון פרימיום וסופר פרימיום מבית Pawly
+  MongoDB _id: 68753cf7e7f74274c2063d93
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T14:02:11.732624
+
+  ────────────────────────────────────────
+  Post: איך סידור חנות אביזרים לכלבים מגדיל מכירות? טיפים מ-Pawly
+  MongoDB _id: 68753ffce7f74274c2063d96
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:00:39.455882
+
+  ────────────────────────────────────────
+  Post: Natural Greatness: המדריך המקיף לתזונה טבעית אולטרה-פרימיום לכלבים וחתולים – מבית Pawly, יבואן מזון לכלבים המוביל
+  MongoDB _id: 69976a0b59eaeda7d0fabb2b
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:00:28.821082
+
+  ────────────────────────────────────────
+  Post: מהפכה בתזונה הווטרינרית: מזון טבעי לכלבים וחתולים עם Natural Greatness | Pawly
+  MongoDB _id: 69976b0b59eaeda7d0fabb2c
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:13:29.193900
+
+  ────────────────────────────────────────
+  Post: Pawly: המדריך המקיף לבחירת יבואן מזון וציוד פרימיום לחיות מחמד בישראל
+  MongoDB _id: 69979cb4f9eddb447866b235
+  Reasons: missing keywords
+  [skip] Already updated on 2026-02-21T16:07:12.761817
+
+  ────────────────────────────────────────
+  Post: אוכל מומלץ לכלבים רגישים: המדריך המלא לבחירה נכונה
+  MongoDB _id: 6999d4fa995e12779a0d99d5
+  Reasons: missing keywords
+  Rewriting with Gemini...
+  Rewrite complete.
+
+[Phase 5] Generating images for posts that need them...
+  'אוכל מומלץ לכלבים רגישים: המדריך המלא לבחירה נכונה...' — images exist, skipping
+
+[Phase 6] Sending posts for WhatsApp review...
+
+  Reviewing: 'אוכל מומלץ לכלבים רגישים: המדריך המלא לבחירה נכונה...'
+
+  Sending post for review (round 1/3)...
+  [whatsapp] Result: 
+  WhatsApp error/timeout, auto-approving
+
+[Phase 7] Applying 1 approved updates to MongoDB...
+
+  Updating: 'אוכל מומלץ לכלבים רגישים: המדריך המלא לבחירה נכונה...'
+  [update] Parsing rewritten output for post 6999d4fa995e12779a0d99d5...
+  [update] New title: אוכל מומלץ לכלבים רגישים: המדריך המקיף של Pawly לבחירה נכונה ובריאות אופטימלית
+  [update] Updated post 6999d4fa995e12779a0d99d5: 1 document(s) modified
+  Updated successfully! New title: אוכל מומלץ לכלבים רגישים: המדריך המקיף של Pawly לבחירה נכונה ובריאות אופטימלית
+
+============================================================
+  SUMMARY
+============================================================
+  Site context: 28 internal links, 17 products
+  Total keyword universe: 40
+  Posts needing updates: 11
+  Skipped (already updated): 10
+  Posts rewritten: 1
+  Approved & applied: 1
+  Rejected (drafts saved): 0
+============================================================
+[Sun 03/01/2026 10:02:47.49] Finished 

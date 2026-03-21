@@ -1,7 +1,7 @@
 gemini:
   api_key: "YOUR_GEMINI_API_KEY"
   model: "gemini-2.5-flash"
-  image_model: "imagen-4"
+  image_model: "imagen-4.0-fast-generate-001"
 
 site:
   name: "YourSite"
@@ -65,3 +65,12 @@ context:
       description: "Description of product 1"
     - name: "Product 2"
       description: "Description of product 2"
+
+search_console:
+  credentials_file: "client_secret_242852066968-bc5q46rb4pobapbu5iifd2rd9u673r82.apps.googleusercontent.com.json"   # OAuth2 client credentials from Google Cloud Console
+  token_file: "gsc_token.json"               # Auto-saved after first login (shared across configs)
+  site_url: "https://yoursite.com/"           # Override per-site (defaults to site.domain)
+  protection_thresholds:
+    min_clicks: 10
+    min_impressions: 100
+    max_position: 20.0

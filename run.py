@@ -1,7 +1,7 @@
 import sys
 import os
 import yaml
-from orchestrator import run_new_pipeline, run_update_pipeline, run_static_pipeline, run_full_pipeline, run_images_pipeline
+from orchestrator import run_new_pipeline, run_update_pipeline, run_static_pipeline, run_full_pipeline, run_images_pipeline, run_recover_pipeline, run_diagnose_pipeline, run_products_pipeline, run_impact_pipeline, run_dedupe_pipeline
 
 # Fix Hebrew output on Windows console
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
@@ -49,6 +49,16 @@ def main():
         run_full_pipeline(seed_keywords, config)
     elif mode == "images":
         run_images_pipeline(config)
+    elif mode == "recover":
+        run_recover_pipeline(config)
+    elif mode == "diagnose":
+        run_diagnose_pipeline(config)
+    elif mode == "products":
+        run_products_pipeline(config)
+    elif mode == "impact":
+        run_impact_pipeline(config)
+    elif mode == "dedupe":
+        run_dedupe_pipeline(config)
     else:
         print(f"{site_name} SEO Blog Engine")
         print("=" * 40)
@@ -59,7 +69,12 @@ def main():
         print("  python run.py static                               Rewrite static pages (home, registration, etc.)")
         print("  python run.py full                                 Full init: new posts + updates + static pages")
         print("  python run.py images                               Generate images for posts missing them")
-        print("  python run.py new --config config.everst.yaml      Use specific config")
+        print("  python run.py recover                              Restore pages that lost GSC rankings after updates")
+        print("  python run.py diagnose                             Deep SEO analysis: indexing, CWV, cannibalization, trends")
+        print("  python run.py products                             SEO-optimize product pages: rewrite content + branded images")
+        print("  python run.py impact                               Measure GSC impact of recent updates (before vs after)")
+        print("  python run.py dedupe                               Fix cannibalization: merge/delete duplicate-topic posts")
+        print("  python run.py new --config config.pawly.yaml       Use specific config")
         print()
         print(f"Config: {config_path}")
         print(f"Site: {site_name} ({config['site']['domain']})")

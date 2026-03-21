@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /c/Users/user/Desktop/work/seo-tools/seo-blog-engine && python -c \"import py_compile; py_compile.compile\\('tools/search_console.py', doraise=True\\); print\\('search_console.py OK'\\)\" 2>&1)",
+      "Bash(cd /c/Users/user/Desktop/work/seo-tools/seo-blog-engine && python -c \"import py_compile; py_compile.compile\\('generator/prompts.py', doraise=True\\); print\\('prompts.py OK'\\)\" 2>&1)",
+      "Bash(cd /c/Users/user/Desktop/work/seo-tools/seo-blog-engine && python -c \"import py_compile; py_compile.compile\\('publisher/post_publisher.py', doraise=True\\); print\\('post_publisher.py OK'\\)\" 2>&1)",
+      "Bash(cd /c/Users/user/Desktop/work/seo-tools/seo-blog-engine && python -c \"import py_compile; py_compile.compile\\('orchestrator.py', doraise=True\\); print\\('orchestrator.py OK'\\)\" 2>&1)",
+      "Bash(cd /c/Users/user/Desktop/work/seo-tools/seo-blog-engine && python -c \"import py_compile; py_compile.compile\\('run.py', doraise=True\\); print\\('run.py OK'\\)\" 2>&1)",
+      "Bash(cd /c/Users/user/Desktop/work/seo-tools/seo-blog-engine && python run.py 2>&1)"
+    ]
+  }
+}

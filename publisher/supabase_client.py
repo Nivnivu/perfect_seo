@@ -99,10 +99,19 @@ def _compress_image(image_bytes, logo_path=None, max_size_kb=500, format="JPEG")
     return buffer.getvalue()
 
 
-def upload_image(image_bytes, user_id, config):
+def get_public_url(filename, user_id, config):
+    """Build the full public Supabase URL for an uploaded image."""
+    supabase_url = config["supabase"]["url"].rstrip("/")
+    bucket = config["supabase"]["bucket"]
+    return f"{supabase_url}/storage/v1/object/public/{bucket}/{user_id}/{filename}"
+
+
+def upload_image(image_bytes, user_id, config, skip_logo=False, return_full_url=False):
     """
     Upload image bytes to Supabase storage.
-    Returns the filename (not full URL) - matching how blog-poster stores image references.
+    Returns the filename by default (blog-poster CMS stores filename only).
+    return_full_url=True: return the full public URL instead (for product mediaUrl).
+    skip_logo: set True when the image is already branded (e.g. product images).
     """
     from supabase import create_client
 
@@ -112,10 +121,10 @@ def upload_image(image_bytes, user_id, config):
 
     client = create_client(supabase_url, supabase_key)
 
-    # Get logo path from config
-    logo_path = _get_logo_path(config)
+    # Get logo path from config (skip if already composited)
+    logo_path = None if skip_logo else _get_logo_path(config)
 
-    # Compress image + add logo
+    # Compress image + optionally add logo
     compressed = _compress_image(image_bytes, logo_path=logo_path)
 
     # Generate UUID filename
@@ -128,6 +137,9 @@ def upload_image(image_bytes, user_id, config):
         file=compressed,
         file_options={"content-type": "image/jpeg"},
     )
+
+    if return_full_url:
+        return get_public_url(filename, user_id, config)
 
     # Return just the filename (blog-poster stores filename, not full URL)
     return filename

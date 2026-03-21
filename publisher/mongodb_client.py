@@ -39,7 +39,7 @@ def insert_blog_post(post_data, config):
     collection = db[config["mongodb"]["collection"]]
 
     document = {
-        "userId": post_data["userId"],
+        "userId": post_data.get("userId"),
         "title": post_data["title"],
         "subtitle": post_data["subtitle"],
         "body": post_data["body"],
@@ -219,6 +219,72 @@ def fetch_recent_posts(config, limit=5):
         post["_id"] = str(post["_id"])
 
     return posts
+
+
+def fetch_post_by_id(post_id, config):
+    """Fetch a single blog post by _id, returning title, subtitle, and body."""
+    from bson import ObjectId
+    client = _get_client(config)
+    db = client[config["mongodb"]["database"]]
+    collection = db[config["mongodb"]["collection"]]
+
+    post = collection.find_one(
+        {"_id": ObjectId(post_id)},
+        {"title": 1, "subtitle": 1, "body": 1},
+    )
+    client.close()
+
+    if not post:
+        return None
+    return {
+        "_id": str(post["_id"]),
+        "title": post.get("title", ""),
+        "subtitle": post.get("subtitle", ""),
+        "body": post.get("body", ""),
+    }
+
+
+def _get_products_db(client, config):
+    """Products always live in the 'pawly' database, not the blog database."""
+    db_name = config["mongodb"].get("products_database", "pawly")
+    return client[db_name]
+
+
+def fetch_all_products(config):
+    """Fetch all documents from the wordpress_products collection."""
+    client = _get_client(config)
+    db = _get_products_db(client, config)
+    col = db["wordpress_products"]
+    products = list(col.find({}))
+    client.close()
+    for p in products:
+        p["_id"] = str(p["_id"])
+    return products
+
+
+def update_product(product_id, update_fields, config):
+    """Update specific fields of a product in the wordpress_products collection."""
+    from bson import ObjectId
+    client = _get_client(config)
+    db = _get_products_db(client, config)
+    col = db["wordpress_products"]
+    result = col.update_one(
+        {"_id": ObjectId(product_id)},
+        {"$set": update_fields},
+    )
+    client.close()
+    return result.modified_count
+
+
+def delete_blog_post(post_id, config):
+    """Permanently delete a blog post from MongoDB."""
+    from bson import ObjectId
+    client = _get_client(config)
+    db = client[config["mongodb"]["database"]]
+    collection = db[config["mongodb"]["collection"]]
+    result = collection.delete_one({"_id": ObjectId(str(post_id))})
+    client.close()
+    return result.deleted_count
 
 
 def fetch_static_pages(config):

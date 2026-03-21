@@ -33,6 +33,9 @@ Seed Keywords
 
 ## Modes
 
+
+  - Added recover mode: python run.py recover --config config.pawly.yaml 
+
 | Command | Description |
 |---|---|
 | `python run.py new` | Research + generate + publish a single new blog post |
@@ -93,7 +96,7 @@ python run.py new
 gemini:
   api_key: "..."
   model: "gemini-2.5-flash"          # Text generation
-  image_model: "imagen-4"            # Image generation
+  image_model: "imagen-4.0-fast-generate-001"  # Image generation (Imagen 4 Fast)
 
 site:
   name: "YourBrand"
