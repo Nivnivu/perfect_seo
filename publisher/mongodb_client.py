@@ -1,10 +1,18 @@
 """Direct MongoDB client for inserting blog posts into the pawly collection."""
 from datetime import datetime, timezone
 
+# Module-level connection pool: reuse MongoClient instances across calls within
+# the same process. Creating a new MongoClient per operation bypasses PyMongo's
+# built-in pooling and causes a new TCP handshake for every DB call.
+_client_cache: dict = {}
+
 
 def _get_client(config):
     from pymongo import MongoClient
-    return MongoClient(config["mongodb"]["uri"])
+    uri = config["mongodb"]["uri"]
+    if uri not in _client_cache:
+        _client_cache[uri] = MongoClient(uri)
+    return _client_cache[uri]
 
 
 def get_master_user_id(config):
@@ -18,8 +26,6 @@ def get_master_user_id(config):
     users = db["usersCollection"]
 
     user = users.find_one({"role": "master"})
-
-    client.close()
 
     if user:
         return str(user["_id"])
@@ -51,8 +57,6 @@ def insert_blog_post(post_data, config):
     }
 
     result = collection.insert_one(document)
-    client.close()
-
     return str(result.inserted_id)
 
 
@@ -70,7 +74,6 @@ def update_blog_post(post_id, update_fields, config):
         {"_id": ObjectId(post_id)},
         {"$set": update_fields},
     )
-    client.close()
     return result.modified_count
 
 
@@ -112,7 +115,6 @@ def find_post_by_title(title_fragment, config):
         {"title": {"$regex": escaped, "$options": "i"}},
         {"title": 1, "image1Url": 1, "image2Url": 1},
     )
-    client.close()
 
     if post:
         return _post_to_dict(post)
@@ -143,7 +145,6 @@ def find_post_by_url(url, config):
         {"type": "blogPost"},
         {"title": 1, "image1Url": 1, "image2Url": 1},
     ))
-    client.close()
 
     best_post = None
     best_score = 0
@@ -176,7 +177,6 @@ def fetch_all_blog_posts(config):
         {"type": "blogPost"},
         {"title": 1, "subtitle": 1, "body": 1, "image1Url": 1, "image2Url": 1},
     ))
-    client.close()
 
     for p in posts:
         p["_id"] = str(p["_id"])
@@ -198,7 +198,6 @@ def fetch_posts_missing_images(config):
             {"image2Url": {"$exists": False}},
         ]
     }, {"title": 1, "image1Url": 1, "image2Url": 1}))
-    client.close()
 
     for p in posts:
         p["_id"] = str(p["_id"])
@@ -212,7 +211,6 @@ def fetch_recent_posts(config, limit=5):
     collection = db[config["mongodb"]["collection"]]
 
     posts = list(collection.find().sort("createdAt", -1).limit(limit))
-    client.close()
 
     # Convert ObjectId to string for printing
     for post in posts:
@@ -232,7 +230,6 @@ def fetch_post_by_id(post_id, config):
         {"_id": ObjectId(post_id)},
         {"title": 1, "subtitle": 1, "body": 1},
     )
-    client.close()
 
     if not post:
         return None
@@ -256,7 +253,6 @@ def fetch_all_products(config):
     db = _get_products_db(client, config)
     col = db["wordpress_products"]
     products = list(col.find({}))
-    client.close()
     for p in products:
         p["_id"] = str(p["_id"])
     return products
@@ -272,7 +268,6 @@ def update_product(product_id, update_fields, config):
         {"_id": ObjectId(product_id)},
         {"$set": update_fields},
     )
-    client.close()
     return result.modified_count
 
 
@@ -283,7 +278,6 @@ def delete_blog_post(post_id, config):
     db = client[config["mongodb"]["database"]]
     collection = db[config["mongodb"]["collection"]]
     result = collection.delete_one({"_id": ObjectId(str(post_id))})
-    client.close()
     return result.deleted_count
 
 
@@ -294,7 +288,6 @@ def fetch_static_pages(config):
     collection = db[config["mongodb"]["collection"]]
 
     pages = list(collection.find({"type": "staticPage"}))
-    client.close()
 
     for page in pages:
         page["_id"] = str(page["_id"])
@@ -320,5 +313,4 @@ def update_static_page(page_id, title, content, config):
             "updatedAt": datetime.now(timezone.utc),
         }},
     )
-    client.close()
     return result.modified_count

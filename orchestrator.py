@@ -49,15 +49,18 @@ def _save_update_history(history, config):
         json.dump(history, f, ensure_ascii=False, indent=2)
 
 
-def _record_updated_post(post_id, title, config, original_title=None, original_body=None):
+def _record_updated_post(post_id, title, config, original_title=None, original_body=None, history=None):
     """Record a successfully updated post so it's skipped in future runs.
 
     original_title: the title before the update (same as title when preserve_title is used,
                     but stored explicitly so the recovery system can verify it).
     original_body:  the full TipTap body JSON string before the update.
                     Stored so content can be fully restored if the rewrite hurts rankings.
+    history:        pass a pre-loaded history dict to avoid a redundant disk read when
+                    recording multiple posts in the same run. The updated dict is returned.
     """
-    history = _load_update_history(config)
+    if history is None:
+        history = _load_update_history(config)
     entry = {
         "title": title,
         "updated_at": datetime.now().isoformat(),
@@ -68,6 +71,7 @@ def _record_updated_post(post_id, title, config, original_title=None, original_b
         entry["original_body"] = original_body
     history[str(post_id)] = entry
     _save_update_history(history, config)
+    return history
 
 
 def _is_already_updated(post_id, config):
@@ -94,12 +98,14 @@ def _load_static_history(config):
         return {}
 
 
-def _record_static_page(page_id, title, config):
-    history = _load_static_history(config)
+def _record_static_page(page_id, title, config, history=None):
+    if history is None:
+        history = _load_static_history(config)
     history[page_id] = {"title": title, "updated_at": datetime.now().isoformat()}
     path = _get_static_history_path(config)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2)
+    return history
 
 
 # ═══════════════════════════════════════════════
@@ -133,9 +139,14 @@ def _save_recovery_history(history, config):
         json.dump(history, f, ensure_ascii=False, indent=2)
 
 
-def _record_recovery_decision(url, decision, page, config):
-    """Record the decision (approved/rejected/skipped) for a recovery candidate URL."""
-    history = _load_recovery_history(config)
+def _record_recovery_decision(url, decision, page, config, history=None):
+    """Record the decision (approved/rejected/skipped) for a recovery candidate URL.
+
+    history: pass the pre-loaded recovery history dict to avoid redundant disk reads
+             when processing multiple candidates in the same run. Returns the updated dict.
+    """
+    if history is None:
+        history = _load_recovery_history(config)
     history[url] = {
         "decision": decision,
         "processed_at": datetime.now().isoformat(),
@@ -145,6 +156,7 @@ def _record_recovery_decision(url, decision, page, config):
         "cause": page.get("cause", ""),
     }
     _save_recovery_history(history, config)
+    return history
 
 
 # ═══════════════════════════════════════════════
@@ -946,10 +958,11 @@ def run_update_pipeline(seed_keywords, config):
                 else:
                     print(f"  Updated successfully! Title preserved: {result['title']}")
                 # Save original_body so recovery can fully restore content if rankings drop
-                _record_updated_post(
+                update_history = _record_updated_post(
                     item["post_id"], result["title"], config,
                     original_title=item["original_title"],
                     original_body=item.get("original_body"),
+                    history=update_history,
                 )
             except Exception as e:
                 print(f"  [update] Error: {e}")
@@ -1124,7 +1137,6 @@ def run_static_pipeline(config):
         if page_id in static_history:
             last_updated = static_history[page_id].get("updated_at", "")
             try:
-                from datetime import timezone
                 last_dt = datetime.fromisoformat(last_updated).replace(tzinfo=timezone.utc)
                 days_since = (datetime.now(timezone.utc) - last_dt).days
             except Exception:
@@ -1216,7 +1228,7 @@ def run_static_pipeline(config):
                     content=tiptap_content,
                     config=config,
                 )
-                _record_static_page(item["page_id"], item["new_title"], config)
+                static_history = _record_static_page(item["page_id"], item["new_title"], config, history=static_history)
                 print(f"  Updated successfully!")
             except Exception as e:
                 print(f"  [update] Error: {e}")
@@ -1458,10 +1470,11 @@ def run_full_pipeline(seed_keywords, config):
                     else:
                         print(f"  Updated! Title preserved: {result['title']}")
                     # Save original_body so recovery can fully restore content if rankings drop
-                    _record_updated_post(
+                    update_history = _record_updated_post(
                         post_id, result["title"], config,
                         original_title=title,
                         original_body=original_body,
+                        history=update_history,
                     )
                     total_updates_applied += 1
                 except Exception as e:
@@ -1736,7 +1749,7 @@ def run_recover_pipeline(config):
     # Phase 2: Filter already-processed URLs
     # ────────────────────────────────────────────
     recovery_history = _load_recovery_history(config)
-    already_done = {url: entry for url, entry in recovery_history.items()}
+    already_done = recovery_history
 
     new_pages = [p for p in lost_pages if p["url"] not in already_done]
     skipped_count = len(lost_pages) - len(new_pages)
@@ -1799,7 +1812,7 @@ def run_recover_pipeline(config):
                 f"יש לבדוק ידנית. הודעה זו לא תחזור שוב."
             )
             send_whatsapp_message(message, config)
-            _record_recovery_decision(page["url"], "flagged_no_history", page, config)
+            recovery_history = _record_recovery_decision(page["url"], "flagged_no_history", page, config, history=recovery_history)
             continue
 
         # Gather GSC queries for this URL (used for recovery rewrites)
@@ -1853,10 +1866,10 @@ def run_recover_pipeline(config):
                         desc = "כותרת + תוכן" if has_original_body else "כותרת"
                         print(f"  Restored {desc}: '{page['original_title']}'")
                         restored_count += 1
-                        _record_recovery_decision(page["url"], "approved", page, config)
+                        recovery_history = _record_recovery_decision(page["url"], "approved", page, config, history=recovery_history)
                     else:
                         print(f"  [warning] No document modified — post may have been deleted")
-                        _record_recovery_decision(page["url"], "approved_not_found", page, config)
+                        recovery_history = _record_recovery_decision(page["url"], "approved_not_found", page, config, history=recovery_history)
                 except Exception as e:
                     print(f"  [error] Failed to restore: {e}")
 
@@ -1896,7 +1909,7 @@ def run_recover_pipeline(config):
 
                     if rewritten.startswith("[Gemini Error]"):
                         print(f"  {rewritten}")
-                        _record_recovery_decision(page["url"], "rewrite_failed", page, config)
+                        recovery_history = _record_recovery_decision(page["url"], "rewrite_failed", page, config, history=recovery_history)
                     else:
                         # Send the rewrite for WhatsApp review before publishing
                         final_output, rewrite_approved = _review_loop(
@@ -1916,25 +1929,25 @@ def run_recover_pipeline(config):
                             )
                             print(f"  Recovery rewrite published: '{result['title']}'")
                             restored_count += 1
-                            _record_recovery_decision(page["url"], "rewrite_approved", page, config)
+                            recovery_history = _record_recovery_decision(page["url"], "rewrite_approved", page, config, history=recovery_history)
                         else:
                             print(f"  Recovery rewrite rejected")
-                            _record_recovery_decision(page["url"], "rewrite_rejected", page, config)
+                            recovery_history = _record_recovery_decision(page["url"], "rewrite_rejected", page, config, history=recovery_history)
 
                 except Exception as e:
                     print(f"  [error] Recovery rewrite failed: {e}")
-                    _record_recovery_decision(page["url"], "rewrite_error", page, config)
+                    recovery_history = _record_recovery_decision(page["url"], "rewrite_error", page, config, history=recovery_history)
             else:
                 # No backup, no queries — just flag it
-                _record_recovery_decision(page["url"], "approved_manual", page, config)
+                recovery_history = _record_recovery_decision(page["url"], "approved_manual", page, config, history=recovery_history)
                 print(f"  Marked as manually handled")
 
         elif status == "rejected":
             print(f"  Skipped (rejected)")
-            _record_recovery_decision(page["url"], "rejected", page, config)
+            recovery_history = _record_recovery_decision(page["url"], "rejected", page, config, history=recovery_history)
         else:
             print(f"  Skipped (no response / error)")
-            _record_recovery_decision(page["url"], "skipped_no_response", page, config)
+            recovery_history = _record_recovery_decision(page["url"], "skipped_no_response", page, config, history=recovery_history)
 
     # ────────────────────────────────────────────
     # Summary
@@ -2059,7 +2072,6 @@ def run_diagnose_pipeline(config):
     line(f"Posts ranked but 0 clicks   : {zero_clicks_n}")
 
     # Duplicate title detection — same topic published twice = both may get deindexed
-    from collections import Counter
     title_prefixes = Counter()
     for p in blog_posts:
         title = p.get("title", "")
@@ -2162,7 +2174,6 @@ def run_diagnose_pipeline(config):
     pos_buckets = {"top3": [], "page1": [], "page2": [], "deep": [], "no_data": []}
     for post in blog_posts:
         title = post.get("title", "")
-        from tools.search_console import match_post_to_gsc_url
         url, data = match_post_to_gsc_url(title, gsc_perf, config)
         if not data:
             pos_buckets["no_data"].append(title)
