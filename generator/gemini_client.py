@@ -1,7 +1,7 @@
 import base64
 from google import genai
 from google.genai import types
-from generator.prompts import build_blog_prompt, build_edit_prompt, build_rewrite_prompt, build_fix_prompt, build_static_page_prompt, build_image_prompt, build_recovery_rewrite_prompt, build_product_prompt, build_differentiation_prompt
+from generator.prompts import build_blog_prompt, build_edit_prompt, build_rewrite_prompt, build_fix_prompt, build_static_page_prompt, build_image_prompt, build_recovery_rewrite_prompt, build_product_prompt, build_differentiation_prompt, build_subtitle_only_prompt
 
 
 def _get_client(config):
@@ -36,6 +36,21 @@ def suggest_post_edits(post_data, competitor_summary, all_keywords, config, site
         return response.text
     except Exception as e:
         return f"[Gemini Error] Failed to generate edit suggestions: {e}"
+
+
+def generate_blog_subtitle(post_data, config, site_context=None):
+    """Generate only a new meta description for a ctr_opportunity post (subtitle_only mode).
+    Far cheaper than a full rewrite — sends a short prompt and returns parse_gemini_output-compatible output."""
+    client = _get_client(config)
+    prompt = build_subtitle_only_prompt(post_data, config, site_context=site_context)
+    try:
+        response = client.models.generate_content(
+            model=config["gemini"]["model"],
+            contents=prompt,
+        )
+        return response.text
+    except Exception as e:
+        return f"[Gemini Error] Failed to generate meta description: {e}"
 
 
 def rewrite_blog_post(post_data, competitor_summary, all_keywords, config, site_context=None):

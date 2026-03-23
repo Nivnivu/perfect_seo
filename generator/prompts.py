@@ -158,6 +158,53 @@ URL: {post_data.get('url', 'לא ידוע')}
 """
 
 
+def build_subtitle_only_prompt(post_data, config, site_context=None):
+    """Build a lightweight prompt that generates only a new meta description.
+    Used for ctr_opportunity posts: page ranks on page 1 but CTR is low.
+    Avoids the cost of a full rewrite when only the meta description needs improvement."""
+    title = post_data.get("title", "")
+    gsc_context = post_data.get("gsc_context", {})
+    ranking_queries = gsc_context.get("top_queries", [])
+    gsc_metrics = gsc_context.get("metrics", {})
+    site_name = config["site"]["name"]
+    domain = config["site"]["domain"]
+
+    queries_list = "\n".join(f"- {q}" for q in ranking_queries[:8])
+
+    context_block = ""
+    if site_context:
+        context_block = format_context_for_prompt(site_context, topic=title)
+
+    return f"""אתה כותב תוכן SEO מומחה עבור האתר "{site_name}" ({domain}).
+משימה: כתוב תיאור מטא חדש ומשופר לפוסט בלוג קיים. רק תיאור המטא — אל תשנה שום דבר אחר.
+
+{context_block}
+
+=== פרטי הפוסט ===
+כותרת: {title}
+מיקום גוגל נוכחי: {gsc_metrics.get('position', '?')}
+CTR נוכחי: {gsc_metrics.get('ctr_pct', 0)}% (נמוך מדי — הבעיה היא בתיאור המטא, לא בתוכן)
+חשיפות: {gsc_metrics.get('impressions', 0)}
+
+=== שאילתות שגוגל מקשר לעמוד זה ===
+{queries_list if queries_list else "אין נתוני GSC"}
+
+=== משימה ===
+כתוב תיאור מטא חדש (עד 160 תווים) שיגדיל את אחוז הקליקים (CTR).
+הדרישות:
+- כלול את מילות המפתח העיקריות מרשימת השאילתות
+- היה ספציפי ומושך — מספרים, הבטחת ערך ברורה
+- גרום לגולש לרצות ללחוץ על התוצאה הזו מעל לכל האחרות
+
+החזר בפורמט הבא בלבד:
+TITLE: {title}
+META_DESCRIPTION: [תיאור המטא החדש — עד 160 תווים]
+SLUG:
+---
+[תוכן הפוסט לא משתנה]
+---"""
+
+
 def build_rewrite_prompt(post_data, competitor_summary, all_keywords, config, site_context=None):
     """Build the Gemini prompt for rewriting and expanding an existing blog post."""
     missing_kws = ", ".join(post_data.get("keywords_missing", [])[:10])

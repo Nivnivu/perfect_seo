@@ -11,7 +11,7 @@ from tools.trends import get_trends_data
 from tools.serp_scraper import scrape_serp
 from tools.competitor_analyzer import analyze_competitors, summarize_competitor_patterns
 from tools.site_context import scrape_site_context
-from generator.gemini_client import generate_blog_post, rewrite_blog_post, apply_post_fixes, rewrite_static_page, generate_blog_images
+from generator.gemini_client import generate_blog_post, rewrite_blog_post, apply_post_fixes, rewrite_static_page, generate_blog_images, generate_blog_subtitle
 from publisher.post_publisher import publish_blog_post, update_existing_post, update_post_images
 from publisher.mongodb_client import fetch_static_pages, update_static_page, fetch_posts_missing_images, fetch_all_blog_posts
 from publisher.tiptap_converter import parse_gemini_output, extract_text_from_tiptap, markdown_to_static_tiptap
@@ -842,15 +842,20 @@ def run_update_pipeline(seed_keywords, config):
         allow_title_change = (gsc_category == "not_indexed")
 
         # Rewrite with Gemini (with site context)
+        # subtitle_only: skip full rewrite — only generate a new meta description (much cheaper)
         if subtitle_only:
             print(f"  [ctr_opportunity] Generating improved meta description only (body untouched)...")
+            rewritten = generate_blog_subtitle(post, config, site_context=site_context)
         elif allow_title_change:
             print(f"  [not_indexed] Content quality rewrite — new title allowed...")
+            rewritten = rewrite_blog_post(
+                post, competitor_summary, list(all_keywords), config, site_context=site_context
+            )
         else:
             print(f"  Rewriting with Gemini...")
-        rewritten = rewrite_blog_post(
-            post, competitor_summary, list(all_keywords), config, site_context=site_context
-        )
+            rewritten = rewrite_blog_post(
+                post, competitor_summary, list(all_keywords), config, site_context=site_context
+            )
 
         if rewritten.startswith("[Gemini Error]"):
             print(f"  {rewritten}")
@@ -1415,15 +1420,20 @@ def run_full_pipeline(seed_keywords, config):
             # not_indexed: title CAN be changed — no rankings at risk (page was never indexed)
             allow_title_change = (gsc_category == "not_indexed")
 
+            # subtitle_only: skip full rewrite — only generate a new meta description (much cheaper)
             if subtitle_only:
                 print(f"\n  [ctr_opportunity] Meta description only: {title[:60]}")
+                rewritten = generate_blog_subtitle(post, config, site_context=site_context)
             elif allow_title_change:
                 print(f"\n  [not_indexed] Content quality rewrite — new title allowed: {title[:60]}")
+                rewritten = rewrite_blog_post(
+                    post, competitor_summary, list(all_keywords), config, site_context=site_context
+                )
             else:
                 print(f"\n  Rewriting: {title[:60]}")
-            rewritten = rewrite_blog_post(
-                post, competitor_summary, list(all_keywords), config, site_context=site_context
-            )
+                rewritten = rewrite_blog_post(
+                    post, competitor_summary, list(all_keywords), config, site_context=site_context
+                )
             if rewritten.startswith("[Gemini Error]"):
                 print(f"  {rewritten}")
                 continue
@@ -1497,6 +1507,8 @@ def run_full_pipeline(seed_keywords, config):
         print("\n  No static pages found.")
     else:
         print(f"\n  Found {len(pages)} static pages")
+        static_history = _load_static_history(config)
+        STATIC_COOLDOWN_DAYS = 30
         for page in pages:
             page_id = page.get("pageId", "unknown")
             page_title = page.get("title", "")
@@ -1505,6 +1517,18 @@ def run_full_pipeline(seed_keywords, config):
             if page_id == "policy":
                 print(f"  [{page_id}] Skipping policy/legal page")
                 continue
+
+            # Skip if updated recently — same cooldown logic as run_static_pipeline
+            if page_id in static_history:
+                last_updated = static_history[page_id].get("updated_at", "")
+                try:
+                    last_dt = datetime.fromisoformat(last_updated).replace(tzinfo=timezone.utc)
+                    days_since = (datetime.now(timezone.utc) - last_dt).days
+                except Exception:
+                    days_since = 999
+                if days_since < STATIC_COOLDOWN_DAYS:
+                    print(f"\n  [{page_id}] Skipping — updated {days_since}d ago (cooldown: {STATIC_COOLDOWN_DAYS}d)")
+                    continue
 
             print(f"\n  Rewriting: {page_title} ({page_id})")
             current_text = extract_text_from_tiptap(content)
