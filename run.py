@@ -75,8 +75,8 @@ def main():
         print("  python run.py diagnose                             Deep SEO analysis: indexing, CWV, cannibalization, trends")
         print("  python run.py products                             SEO-optimize product pages: rewrite content + branded images")
         print("  python run.py impact                               Measure GSC impact of recent updates (before vs after)")
-        print("  python run.py dedupe                               Fix cannibalization: merge/delete duplicate-topic posts
-  python run.py restore_titles                       Restore original URL slugs for posts whose title was changed")
+        print("  python run.py dedupe                               Fix cannibalization: merge/delete duplicate-topic posts")
+        print("  python run.py restore_titles                       Restore original URL slugs for posts whose title was changed")
         print("  python run.py new --config config.pawly.yaml       Use specific config")
         print()
         print(f"Config: {config_path}")

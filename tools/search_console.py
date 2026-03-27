@@ -23,7 +23,10 @@ def _get_gsc_service(config):
     gsc_config = config.get("search_console", {})
     credentials_file = gsc_config.get("credentials_file", "gsc_credentials.json")
     token_file = gsc_config.get("token_file", "gsc_token.json")
-    scopes = ["https://www.googleapis.com/auth/webmasters.readonly"]
+    scopes = [
+        "https://www.googleapis.com/auth/webmasters.readonly",
+        "https://www.googleapis.com/auth/webmasters",
+    ]
 
     creds = None
 

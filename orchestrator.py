@@ -602,8 +602,8 @@ def run_research(seed_keywords, config):
                         impact_verdicts = json.load(f)
                     hurt_count = sum(1 for v in impact_verdicts.values() if v.get("status") == "hurt")
                     print(f"  [impact] Loaded verdicts: {hurt_count} posts marked 'hurt' — will be skipped")
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"  [impact] Could not load verdicts from {impact_json}: {e} — hurt-post protection disabled")
             for post in own_posts:
                 title = post.get("title", "")
                 verdict = impact_verdicts.get(title, {})
@@ -2536,7 +2536,7 @@ def run_diagnose_pipeline(config):
     try:
         static_pages = fetch_static_pages(config)
     except Exception as e:
-        pass
+        print(f"  [warn] Could not load static pages: {e}")
 
     if static_pages:
         section("11. STATIC PAGES")
@@ -3244,17 +3244,20 @@ def run_impact_pipeline(config):
     try:
         from tools.product_pipeline import load_product_history, match_product_to_gsc
         product_history = load_product_history(config)
-    except Exception:
+    except Exception as e:
         product_history = {}
+        if "No module named" not in str(e):
+            print(f"  [warn] Could not load product history: {e}")
 
     if product_history:
         try:
             from publisher.mongodb_client import fetch_all_products
             all_products = fetch_all_products(config)
             products_by_id = {str(p["_id"]): p for p in all_products}
-        except Exception:
+        except Exception as e:
             all_products = []
             products_by_id = {}
+            print(f"  [warn] Could not load products from MongoDB: {e}")
 
         print("\n[PRODUCT PAGES IMPACT]")
         print("-" * 60)

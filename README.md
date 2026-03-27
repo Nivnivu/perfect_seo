@@ -1,200 +1,389 @@
-# Perfect SEO Blog Engine
+# SEO Blog Engine
 
-An AI-powered, end-to-end SEO blog engine that researches keywords, analyzes competitors, generates optimized Hebrew blog posts with images, and publishes them — all with a human-in-the-loop WhatsApp approval flow.
+An AI-powered SEO content engine with a **local web UI**. Research keywords, generate optimized blog posts with images, update underperforming content using Google Search Console data, and publish directly to your CMS — all from a clean browser interface.
 
-## How It Works
+Works with **any AI provider** and **any major CMS platform**.
 
-```
-Seed Keywords
-     |
-     v
-[Phase 0] Scrape your own website for context (products, brand voice, internal links)
-     |
-[Phase 1] Expand keywords via Google Autocomplete + Google Trends
-     |         10 seeds --> 100+ long-tail variations
-     |
-[Phase 2] Scrape Google SERPs for top keywords
-     |         Extract: organic results, People Also Ask, related searches
-     |         Analyze top competitor pages (headings, word count, keyword density)
-     |
-[Phase 3] Content gap analysis against your existing blog posts in MongoDB
-     |         Find uncovered keywords with highest trend scores
-     |
-[Phase 4] Generate blog post with Gemini AI
-     |         SEO-optimized, Hebrew, brand-aware, competitor-beating length
-     |
-[Phase 5] Generate desktop (4:3) + mobile (1:1) header images with Imagen
-     |
-[Phase 6] Send preview to WhatsApp for approval
-     |         Owner can: approve / reject / send feedback for AI revision
-     |
-[Phase 7] Publish to MongoDB + upload images to Supabase
-```
+---
 
-## Modes
+## Features
 
+- **Local web UI** — no SaaS, no subscriptions, runs on your machine
+- **Multi-platform** — MongoDB, WordPress, WooCommerce, Shopify, Wix
+- **Any AI provider** — Google Gemini, OpenAI, Anthropic Claude, Mistral, DeepSeek
+- **GSC integration** — protect ranking pages, find page-2 opportunities, track performance
+- **Live pipeline streaming** — watch every step in real time, abort anytime, download logs
+- **Multi-site** — manage unlimited sites from one UI, each with its own config
+- **Pipeline history** — every run logged with status, duration, and log preview
 
-  - Added recover mode: python run.py recover --config config.pawly.yaml 
+---
 
-| Command | Description |
-|---|---|
-| `python run.py new` | Research + generate + publish a single new blog post |
-| `python run.py update` | Find and rewrite/expand underperforming existing posts |
-| `python run.py static` | Rewrite static pages (homepage, registration, etc.) |
-| `python run.py full` | Full run: new posts + updates + static pages |
-| `python run.py images` | Generate images for posts that are missing them |
+## Quick Start
 
-Use `--config` to target a specific site:
+> **Requirements:** Python 3.10+, Node.js 18+, Git Bash (Windows) or any Unix shell
 
 ```bash
-python run.py new --config config.pawly.yaml
-python run.py update --config config.everst.yaml
+git clone https://github.com/your-username/seo-blog-engine.git
+cd seo-blog-engine
+./start.sh
 ```
+
+The script installs all dependencies, starts the API on port 8000 and the UI on port 5173, and opens your browser automatically.
+
+**First time:** Go to **Sites → Add Site** and follow the wizard to configure your first site.
+
+---
 
 ## Setup
 
-### 1. Install dependencies
+### 1. Add a site through the UI
+
+Open `http://localhost:5173/sites` and click **Add Site**. The wizard walks you through:
+
+1. Choose your CMS platform
+2. Enter site name, domain, AI provider + API key
+3. Enter platform credentials
+4. (Optional) Connect Google Search Console
+5. Add seed keywords and brand context
+6. Review and save → creates `config.yoursite.yaml` in the project root
+
+Or copy one of the example configs manually:
 
 ```bash
-pip install -r requirements.txt
+# Choose the one that matches your platform:
+cp config.example.mongodb.yaml   config.mysite.yaml
+cp config.example.wordpress.yaml config.mysite.yaml
+cp config.example.shopify.yaml   config.mysite.yaml
 ```
 
-### 2. WhatsApp module (optional, for approval flow)
+---
 
-```bash
-cd whatsapp
-npm install
-```
+### 2. Choose an AI provider
 
-On first run, a QR code will appear in the terminal — scan it with WhatsApp to authenticate. The session is saved for future runs.
+Add **one** of these blocks to your config:
 
-### 3. Configure your site
-
-Copy the example config and fill in your details:
-
-```bash
-cp config.example.yaml config.yaml
-```
-
-Edit `config.yaml` with:
-- **Gemini API key** — from [Google AI Studio](https://aistudio.google.com/)
-- **MongoDB URI** — your MongoDB Atlas connection string
-- **Supabase URL + key** — for image storage
-- **Site details** — domain, language, competitors
-- **Seed keywords** — 8-12 starting keywords for your niche
-- **Brand context** — voice, USPs, products, image style
-
-### 4. Run
-
-```bash
-python run.py new
-```
-
-## Config Structure
-
+#### Google Gemini (recommended — has image generation)
 ```yaml
 gemini:
-  api_key: "..."
-  model: "gemini-2.5-flash"          # Text generation
-  image_model: "imagen-4.0-fast-generate-001"  # Image generation (Imagen 4 Fast)
+  api_key: "AIza..."                        # aistudio.google.com/app/apikey
+  model: "gemini-2.5-flash"
+  image_model: "imagen-4.0-fast-generate-001"
+```
 
-site:
-  name: "YourBrand"
-  domain: "yourbrand.com"
-  blog_url: "https://yourbrand.com/blog"
-  language: "he"                     # Content language
-  country: "il"                      # Google Trends region
-  google_domain: "google.co.il"      # SERP scraping domain
+#### OpenAI
+```yaml
+openai:
+  api_key: "sk-..."                         # platform.openai.com/api-keys
+  model: "gpt-4o"
+  image_model: "dall-e-3"                   # optional
+```
+
+#### Anthropic Claude
+```yaml
+anthropic:
+  api_key: "sk-ant-..."                     # console.anthropic.com/settings/keys
+  model: "claude-sonnet-4-6"
+```
+
+#### Mistral AI
+```yaml
+mistral:
+  api_key: "..."                            # console.mistral.ai/api-keys
+  model: "mistral-large-latest"
+```
+
+#### DeepSeek
+```yaml
+deepseek:
+  api_key: "sk-..."                         # platform.deepseek.com/api_keys
+  model: "deepseek-chat"
+```
+
+---
+
+### 3. Platform Credentials
+
+#### MongoDB (default)
+
+You need a MongoDB Atlas cluster and a Supabase project for image storage.
+
+```yaml
+platform: mongodb
 
 mongodb:
-  uri: "mongodb+srv://..."
+  uri: "mongodb+srv://user:pass@cluster.mongodb.net/"
   database: "multiBlogDB"
   collection: "your_collection"
 
-competitors:                         # Top 3-5 competitor websites
-  - "https://competitor1.com/"
-
-keywords:
-  seeds:                             # 8-12 seed keywords
-    - "your main keyword"
-
-context:
-  brand_voice: |                     # How your brand talks
-    ...
-  unique_selling_points:             # What makes you different
-    - "USP 1"
-  products:                          # Your products/services
-    - name: "Product"
-      description: "..."
-  image_style:                       # Guide for AI image generation
-    description: "..."
-    visual_elements: "..."
-    color_palette: "..."
+supabase:
+  url: "https://xxxx.supabase.co"
+  key: "your-service-role-key"
+  bucket: "blog-poster"
 ```
+
+**MongoDB Atlas:** Create a free cluster at [mongodb.com/atlas](https://www.mongodb.com/atlas) → Database → Connect → Drivers → copy the URI.
+
+**Supabase:** Create a project at [supabase.com](https://supabase.com) → Settings → API → copy URL and service_role key. Create a storage bucket named `blog-poster` and set it to public.
+
+---
+
+#### WordPress
+
+Uses the WordPress REST API v2 with an Application Password (no plugins needed).
+
+```yaml
+platform: wordpress
+
+wordpress:
+  site_url: "https://yourblog.com"
+  username: "your-wp-username"
+  app_password: "xxxx xxxx xxxx xxxx xxxx xxxx"  # WP Admin → Users → Edit → Application Passwords
+```
+
+**How to get an Application Password:**
+1. Go to WordPress Admin → Users → Edit your user
+2. Scroll to **Application Passwords** section
+3. Enter a name (e.g. "SEO Engine") → click **Add New Application Password**
+4. Copy the generated password (shown only once)
+
+---
+
+#### WooCommerce
+
+```yaml
+platform: woocommerce
+
+woocommerce:
+  site_url: "https://yourstore.com"
+  consumer_key: "ck_..."
+  consumer_secret: "cs_..."
+```
+
+**How to get API keys:**
+1. Go to WooCommerce → Settings → Advanced → REST API
+2. Click **Add Key** → set permissions to **Read/Write**
+3. Copy the Consumer Key and Consumer Secret
+
+---
+
+#### Shopify
+
+```yaml
+platform: shopify
+
+shopify:
+  store_domain: "your-store.myshopify.com"
+  admin_api_token: "shpat_..."
+```
+
+**How to get an Admin API token:**
+1. Shopify Admin → Settings → Apps and sales channels → Develop apps
+2. Enable custom app development → Create an app
+3. Configure Admin API scopes: `read_content`, `write_content`, `read_products`, `write_products`
+4. Install the app → copy the Admin API access token
+
+---
+
+#### Wix
+
+```yaml
+platform: wix
+
+wix:
+  api_key: "IST.eyJ..."                     # Wix API key (starts with IST.)
+  site_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+```
+
+**How to get Wix credentials:**
+1. Go to [Wix Dev Center](https://dev.wix.com) → API Keys
+2. Create a key with **Blog** and **Stores** permissions
+3. Your site ID is in your Wix dashboard URL
+
+---
+
+### 4. Google Search Console (optional but recommended)
+
+GSC enables: ranking protection (never overwrite pages with real clicks), page-2 opportunity detection, CTR optimization, and the Analytics dashboard.
+
+**Each user needs their own Google Cloud credentials — do not share yours.**
+
+#### Step 1 — Create a Google Cloud project
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com)
+2. Create a new project (e.g. "SEO Blog Engine")
+3. Go to **APIs & Services → Library** → search **Google Search Console API** → Enable it
+
+#### Step 2 — Create OAuth credentials
+
+1. Go to **APIs & Services → Credentials** → **Create Credentials → OAuth 2.0 Client ID**
+2. Application type: **Desktop app**
+3. Name it anything (e.g. "SEO Engine Local")
+4. Download the JSON → save it to the project root as `client_secret_xxx.json`
+
+#### Step 3 — OAuth consent screen (for your own use)
+
+1. Go to **APIs & Services → OAuth consent screen**
+2. User type: **External** → fill in App name + your email
+3. Add scope: `https://www.googleapis.com/auth/webmasters.readonly`
+4. Add yourself as a **Test user** (under "Test users")
+5. Keep the app in **Testing** mode — you do NOT need to publish it for personal/team use
+
+> **Why keep it in Testing mode?** Publishing requires a Google security review. Since this is a local tool using your own credentials accessing your own Search Console data, Testing mode is correct. Every user of the open-source project creates their own project + stays in Testing mode.
+
+#### Step 4 — Configure your site
+
+```yaml
+search_console:
+  credentials_file: "client_secret_xxx.json"   # path relative to project root
+  token_file: "gsc_token.json"                  # auto-saved after first auth
+  site_url: "https://yoursite.com/"             # must match exactly what's in GSC
+  protection_thresholds:
+    min_clicks: 10        # pages with more clicks than this are NEVER rewritten
+    min_impressions: 100
+    max_position: 20.0
+```
+
+#### Step 5 — Authorize in the browser
+
+Open the **Analytics** tab in the UI → click **Connect GSC**. Your browser will open Google's authorization page. Sign in with the Google account that has Search Console access. The token is saved to `gsc_token.json` and reused automatically.
+
+---
+
+## Pipeline Modes
+
+| Mode | Description |
+|---|---|
+| `new` | Research keywords → generate a new blog post with images |
+| `update` | Find underperforming posts via GSC → rewrite them |
+| `full` | New post + updates + static pages in one run |
+| `static` | Rewrite static pages (homepage, about, etc.) |
+| `images` | Generate missing images for existing posts |
+| `recover` | Restore posts that lost rankings after an update |
+| `diagnose` | Deep SEO audit: indexing, Core Web Vitals, cannibalization |
+| `dedupe` | Detect and fix keyword cannibalization |
+| `impact` | Measure GSC traffic impact of recent updates (before vs after) |
+| `products` | Rewrite WooCommerce/Shopify product pages |
+| `restore_titles` | Restore original URL slugs from update history |
+
+Run from the UI (Pipelines tab) or CLI:
+
+```bash
+python run.py new --config config.mysite.yaml
+python run.py update --config config.mysite.yaml
+```
+
+---
+
+## CLI Usage
+
+```bash
+# All modes support --config to target a specific site
+python run.py new                          # uses config.yaml (default)
+python run.py new --config config.pawly.yaml
+python run.py update --config config.everst.yaml
+python run.py full --config config.shop.yaml
+```
+
+---
+
+## Docker
+
+Run the API in a container while keeping the UI local:
+
+```bash
+# Start everything
+docker compose up
+
+# UI still runs locally (in a separate terminal):
+cd ui && npm install && npm run dev
+```
+
+Or run only the API in Docker and the UI locally:
+
+```bash
+docker compose up api
+cd ui && npm install && npm run dev
+```
+
+The API is available at `http://localhost:8000` and the UI at `http://localhost:5173`.
+
+> **Config files** are mounted from the host — edit them on your machine as normal.
+
+---
 
 ## Project Structure
 
 ```
 seo-blog-engine/
-├── run.py                    # CLI entry point
-├── orchestrator.py           # Main pipeline (research, generate, publish)
-├── config.example.yaml       # Config template
-├── requirements.txt
+├── run.py                     # CLI entry point
+├── orchestrator.py            # Main pipeline logic
+├── config.example.*.yaml      # Config templates per platform
 │
-├── tools/                    # Research & analysis
-│   ├── autocomplete.py       # Google Autocomplete keyword expansion
-│   ├── trends.py             # Google Trends data & scoring
-│   ├── serp_scraper.py       # Google SERP scraping (results, PAA, related)
-│   ├── competitor_analyzer.py# Competitor page analysis (headings, word count, keywords)
-│   ├── site_context.py       # Scrape own site for brand context
-│   └── blog_analyzer.py      # Analyze existing blog posts for gaps
+├── api/                       # FastAPI backend (local web server)
+│   ├── main.py
+│   ├── config_manager.py
+│   └── routes/                # sites, pipelines, gsc, posts, history
 │
-├── generator/                # AI content generation
-│   ├── gemini_client.py      # Gemini API calls (text + Imagen images)
-│   └── prompts.py            # Prompt templates for blog, edit, rewrite, images
+├── publishers/                # Multi-platform publisher abstraction
+│   ├── base.py                # Abstract interface
+│   ├── mongodb.py / wordpress.py / woocommerce.py / shopify.py / wix.py
+│   └── factory.py             # get_publisher(config)
 │
-├── publisher/                # Publishing pipeline
-│   ├── post_publisher.py     # Orchestrates publish/update flow
-│   ├── mongodb_client.py     # MongoDB CRUD operations
-│   ├── supabase_client.py    # Supabase image upload
-│   └── tiptap_converter.py   # Markdown → TipTap JSON (for CMS rendering)
+├── tools/                     # Research & analysis
+│   ├── search_console.py      # GSC auth, performance, opportunities
+│   ├── serp_scraper.py        # Google SERP scraping
+│   ├── competitor_analyzer.py
+│   └── blog_analyzer.py
 │
-├── whatsapp/                 # Human approval flow
-│   └── send_and_wait.js      # Send preview via WhatsApp, wait for approve/reject/feedback
+├── generator/                 # AI content generation
+│   ├── gemini_client.py
+│   └── prompts.py
 │
-├── companies_logos/          # Brand logos for image generation
-└── output/                   # Drafts & update history (gitignored)
+├── publisher/                 # MongoDB publishing pipeline
+│   ├── post_publisher.py
+│   ├── mongodb_client.py
+│   ├── supabase_client.py
+│   └── tiptap_converter.py
+│
+├── ui/                        # Vue 3 + Vite frontend
+│   └── src/
+│       ├── views/             # Dashboard, Sites, Pipelines, Analytics, Posts, History
+│       ├── components/        # AppSidebar, LiveLog, AddSiteWizard, ui/*
+│       └── stores/            # Pinia: sites, pipelines, wizard
+│
+├── Dockerfile                 # API container
+├── docker-compose.yml
+└── start.sh                   # One-command local startup
 ```
 
-## WhatsApp Approval Flow
-
-Before publishing, the engine sends a preview to your WhatsApp. Reply with:
-
-- **"approve"** / **"אישור"** — publish the post
-- **"cancel"** / **"ביטול"** — reject (draft saved locally)
-- **Any other text** — treated as feedback, Gemini revises the post and re-sends for review
-
-Up to 3 review rounds are supported. If no reply within the timeout (default 30 min), the post is auto-approved.
-
-## Multi-Site Support
-
-Run the same engine for multiple sites by creating separate config files:
-
-```
-config.yaml            # Default site
-config.pawly.yaml      # Pet food site
-config.everst.yaml     # Education platform
-config.apps4all.yaml   # Tech company
-```
-
-Each config defines its own keywords, competitors, brand voice, MongoDB collection, and publishing targets.
+---
 
 ## Tech Stack
 
-- **Gemini 2.5 Flash** — blog post generation, content rewriting, prompt-driven SEO
-- **Imagen 4** — AI-generated blog header images (desktop + mobile)
-- **Google Trends** — keyword scoring by search interest
-- **Google Autocomplete** — long-tail keyword discovery
-- **MongoDB** — blog post storage (TipTap JSON format)
-- **Supabase** — image hosting (S3-compatible storage)
-- **whatsapp-web.js** — human-in-the-loop approval via WhatsApp
+| Layer | Technology |
+|---|---|
+| Frontend | Vue 3 + TypeScript + Vite + TailwindCSS |
+| UI Style | shadcn/ui pattern (CSS variables, orange primary) |
+| Charts | Chart.js + vue-chartjs |
+| State | Pinia |
+| Backend | FastAPI + uvicorn |
+| Streaming | Server-Sent Events (SSE) |
+| Pipeline history | SQLite |
+| Config | YAML files (per site, gitignored) |
+| AI text | Gemini / OpenAI / Claude / Mistral / DeepSeek |
+| AI images | Imagen 4 / DALL-E 3 |
+| GSC | Google Search Console API v1 (OAuth2 Desktop) |
+| Content DB | MongoDB Atlas |
+| Image storage | Supabase Storage |
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up a dev environment and submit changes.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).

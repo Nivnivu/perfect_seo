@@ -396,17 +396,26 @@ def parse_gemini_output(gemini_text):
 
     # Extract header fields
     body_start = 0
+    last_header_line = -1
     for i, line in enumerate(lines):
         stripped = line.strip()
         if stripped.startswith("TITLE:"):
             result["title"] = _clean_field(stripped[6:])
+            last_header_line = i
         elif stripped.startswith("META_DESCRIPTION:"):
             result["subtitle"] = _clean_field(stripped[17:])
+            last_header_line = i
         elif stripped.startswith("SLUG:"):
             result["slug"] = _clean_field(stripped[5:])
+            last_header_line = i
         elif stripped == "---":
             body_start = i + 1
             break
+
+    # Fallback: if Gemini omitted the --- separator, start body after the last known header line
+    # so header fields (TITLE/META/SLUG) don't get included as body paragraphs.
+    if body_start == 0 and last_header_line >= 0:
+        body_start = last_header_line + 1
 
     # Find end of body (next --- or IMAGE_SUGGESTIONS or INTERNAL_LINK_SUGGESTIONS)
     body_end = len(lines)
