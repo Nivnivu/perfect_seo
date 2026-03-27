@@ -1,0 +1,81 @@
+platform: mongodb
+
+# ── AI Provider ───────────────────────────────────────────────────────────────
+# Choose one block. Remove or comment out the others.
+
+gemini:
+  api_key: "AIza..."                          # aistudio.google.com/app/apikey
+  model: "gemini-2.5-flash"
+  image_model: "imagen-4.0-fast-generate-001"
+
+# openai:
+#   api_key: "sk-..."
+#   model: "gpt-4o"
+#   image_model: "dall-e-3"
+
+# anthropic:
+#   api_key: "sk-ant-..."
+#   model: "claude-sonnet-4-6"
+
+# ── Site ─────────────────────────────────────────────────────────────────────
+site:
+  name: "MyBlog"
+  domain: "myblog.com"
+  blog_url: "https://myblog.com/blog"
+  language: "en"
+  country: "us"
+  google_domain: "google.com"
+
+# ── MongoDB + Supabase ────────────────────────────────────────────────────────
+mongodb:
+  uri: "mongodb+srv://user:pass@cluster.mongodb.net/"
+  database: "multiBlogDB"
+  collection: "myblog_posts"
+
+supabase:
+  url: "https://xxxx.supabase.co"
+  key: "your-service-role-key"
+  bucket: "blog-poster"
+
+# ── Google Search Console (optional) ─────────────────────────────────────────
+search_console:
+  credentials_file: "client_secret_xxx.json"
+  token_file: "gsc_token.json"
+  site_url: "https://myblog.com/"
+  protection_thresholds:
+    min_clicks: 10
+    min_impressions: 100
+    max_position: 20.0
+
+# ── Content Strategy ──────────────────────────────────────────────────────────
+keywords:
+  seeds:
+    - "keyword 1"
+    - "keyword 2"
+    - "keyword 3"
+
+competitors:
+  - "https://competitor1.com/"
+  - "https://competitor2.com/"
+
+context:
+  brand_voice: |
+    Describe your brand voice here.
+    Who is your audience? What tone do you use?
+
+  image_style:
+    description: "describe your business"
+    visual_elements: "describe image style (e.g. clean, minimal, lifestyle photos)"
+    color_palette: "your brand colors"
+
+  unique_selling_points:
+    - "USP 1"
+    - "USP 2"
+
+  products:
+    - name: "Product 1"
+      description: "Description of product 1"
+
+scraping:
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  request_delay: 2

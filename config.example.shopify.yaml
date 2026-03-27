@@ -1,0 +1,62 @@
+platform: shopify
+
+# ── AI Provider ───────────────────────────────────────────────────────────────
+gemini:
+  api_key: "AIza..."
+  model: "gemini-2.5-flash"
+  image_model: "imagen-4.0-fast-generate-001"
+
+# ── Site ─────────────────────────────────────────────────────────────────────
+site:
+  name: "MyShopifyStore"
+  domain: "my-store.myshopify.com"
+  blog_url: "https://my-store.myshopify.com/blogs/news"
+  language: "en"
+  country: "us"
+  google_domain: "google.com"
+
+# ── Shopify ───────────────────────────────────────────────────────────────────
+# Shopify Admin → Settings → Apps → Develop apps → Create app
+# Scopes needed: read_content, write_content, read_products, write_products
+shopify:
+  store_domain: "my-store.myshopify.com"
+  admin_api_token: "shpat_..."
+
+# ── Google Search Console (optional) ─────────────────────────────────────────
+search_console:
+  credentials_file: "client_secret_xxx.json"
+  token_file: "gsc_token.json"
+  site_url: "https://my-store.myshopify.com/"
+  protection_thresholds:
+    min_clicks: 10
+    min_impressions: 100
+    max_position: 20.0
+
+# ── Content Strategy ──────────────────────────────────────────────────────────
+keywords:
+  seeds:
+    - "product keyword 1"
+    - "product keyword 2"
+
+competitors:
+  - "https://competitor1.com/"
+
+context:
+  brand_voice: |
+    Describe your store's brand voice here.
+
+  image_style:
+    description: "describe your store"
+    visual_elements: "product photography style"
+    color_palette: "your brand colors"
+
+  unique_selling_points:
+    - "USP 1"
+
+  products:
+    - name: "Product 1"
+      description: "Description of your main product"
+
+scraping:
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  request_delay: 2

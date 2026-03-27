@@ -188,20 +188,25 @@ context:
 
 ---
 
-## 🔲 Phase 6 — Open Source Polish
+## ✅ Phase 6 — Open Source Polish (DONE)
 
 **Goal:** Ready for public release on GitHub
 
-### To build:
-- [ ] `README.md` — full setup guide for each platform
-- [ ] `config.example.yaml` files per platform (wordpress.example, shopify.example, wix.example)
-- [ ] `.env.example`
-- [ ] `docker-compose.yml` — containerized option (Python API + Node UI + optional MongoDB)
-- [ ] `Dockerfile` for the API
-- [ ] GitHub Actions CI — lint Python, build Vue
-- [ ] Contributing guide
-- [ ] License file (MIT)
-- [ ] Demo GIF/screenshots for README
+### Built:
+- [x] `README.md` — full setup guide: Quick Start, all 5 platforms, all 5 AI providers, GSC OAuth (5-step), pipeline modes, CLI, Docker, project structure, tech stack
+- [x] `config.example.yaml` — updated with `platform:` field and multi-provider format
+- [x] `config.example.mongodb.yaml` — MongoDB + Supabase template
+- [x] `config.example.wordpress.yaml` — WordPress REST API template
+- [x] `config.example.woocommerce.yaml` — WooCommerce REST API template
+- [x] `config.example.shopify.yaml` — Shopify Admin API template
+- [x] `config.example.wix.yaml` — Wix Blog v3 API template
+- [x] `Dockerfile` — Python 3.11-slim, installs both requirements files, exposes 8000
+- [x] `docker-compose.yml` — API container with host config mount; optional MongoDB service (commented out)
+- [x] `.github/workflows/ci.yml` — GitHub Actions: ruff lint (Python) + Vue build (Node 18)
+- [x] `CONTRIBUTING.md` — dev setup, project layout, how to add platforms/providers, code style (ruff), PR guidelines
+- [x] `LICENSE` — MIT
+- [x] `.gitignore` — added: `client_secret_*.json`, `gsc_token.json`, `*.db`, `ui/dist/`, `!config.example.*.yaml`
+- [x] `api/requirements.txt` — added `requests>=2.31.0` (used by WP/WC/Shopify/Wix publishers)
 
 ---
 

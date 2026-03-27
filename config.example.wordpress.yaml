@@ -1,0 +1,59 @@
+platform: wordpress
+
+# ── AI Provider ───────────────────────────────────────────────────────────────
+gemini:
+  api_key: "AIza..."
+  model: "gemini-2.5-flash"
+  image_model: "imagen-4.0-fast-generate-001"
+
+# ── Site ─────────────────────────────────────────────────────────────────────
+site:
+  name: "MyWordPressBlog"
+  domain: "myblog.com"
+  blog_url: "https://myblog.com/blog"
+  language: "en"
+  country: "us"
+  google_domain: "google.com"
+
+# ── WordPress ─────────────────────────────────────────────────────────────────
+# Uses the WordPress REST API v2 with Application Passwords (no plugin required).
+# WP Admin → Users → Edit User → Application Passwords → Add New
+wordpress:
+  site_url: "https://myblog.com"
+  username: "your-wp-username"
+  app_password: "xxxx xxxx xxxx xxxx xxxx xxxx"
+
+# ── Google Search Console (optional) ─────────────────────────────────────────
+search_console:
+  credentials_file: "client_secret_xxx.json"
+  token_file: "gsc_token.json"
+  site_url: "https://myblog.com/"
+  protection_thresholds:
+    min_clicks: 10
+    min_impressions: 100
+    max_position: 20.0
+
+# ── Content Strategy ──────────────────────────────────────────────────────────
+keywords:
+  seeds:
+    - "keyword 1"
+    - "keyword 2"
+
+competitors:
+  - "https://competitor1.com/"
+
+context:
+  brand_voice: |
+    Describe your brand voice here.
+
+  image_style:
+    description: "describe your business"
+    visual_elements: "describe image style"
+    color_palette: "your brand colors"
+
+  unique_selling_points:
+    - "USP 1"
+
+scraping:
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  request_delay: 2

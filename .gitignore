@@ -1,10 +1,18 @@
 # Environment
 .env
 
-# Config files (contain secrets - use config.example.yaml as template)
+# Config files (contain secrets - use config.example.*.yaml as templates)
 config.yaml
 config.*.yaml
 !config.example.yaml
+!config.example.*.yaml
+
+# Google OAuth credentials and tokens (each user has their own)
+client_secret_*.json
+gsc_token.json
+
+# Pipeline run history database
+*.db
 
 # Python
 __pycache__/
@@ -17,6 +25,9 @@ venv/
 node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
+
+# UI build output
+ui/dist/
 
 # Output
 output/

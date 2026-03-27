@@ -1,0 +1,27 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount config files and credentials from host
+      - .:/app/configs:ro
+      - ./output:/app/output
+      - ./pipeline_runs.db:/app/pipeline_runs.db
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  # Optional: run MongoDB locally instead of Atlas
+  # mongo:
+  #   image: mongo:7
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo_data:/data/db
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: example
+
+# volumes:
+#   mongo_data:
