@@ -4,7 +4,7 @@ from publishers.base import BasePlatformPublisher
 
 class MongoDBPublisher(BasePlatformPublisher):
     def fetch_posts(self, limit: int = 50) -> list[dict]:
-        from publisher.mongodb_client import _get_client
+        from publisher.mongodb_client import _get_client, get_master_user_id
         client = _get_client(self.config)
         db = client[self.config["mongodb"]["database"]]
         col = db[self.config["mongodb"]["collection"]]
@@ -14,6 +14,14 @@ class MongoDBPublisher(BasePlatformPublisher):
                 {"title": 1, "subtitle": 1, "image1Url": 1, "createdAt": 1},
             ).sort("createdAt", -1).limit(limit)
         )
+
+        # Resolve upload_id once — same fallback chain as post_publisher.py
+        upload_id = (
+            self.config.get("supabase", {}).get("storage_user_id")
+            or get_master_user_id(self.config)
+            or self.config["mongodb"]["collection"]
+        )
+
         result = []
         for p in posts:
             created = p.get("createdAt")
@@ -21,11 +29,21 @@ class MongoDBPublisher(BasePlatformPublisher):
                 "_id": str(p["_id"]),
                 "title": p.get("title", ""),
                 "subtitle": p.get("subtitle", ""),
-                "image1Url": p.get("image1Url", ""),
+                "image1Url": self._resolve_image_url(p.get("image1Url", ""), upload_id),
                 "created_at": created.isoformat() if hasattr(created, "isoformat") else str(created or ""),
                 "status": "published",
             })
         return result
+
+    def _resolve_image_url(self, value: str, upload_id: str) -> str:
+        """Return a full URL. If value is already a URL, return as-is.
+        Otherwise it's a bare filename — build the Supabase public URL."""
+        if not value or value.startswith("http"):
+            return value
+        supabase = self.config.get("supabase", {})
+        base = supabase.get("url", "").rstrip("/")
+        bucket = supabase.get("bucket", "blog-poster")
+        return f"{base}/storage/v1/object/public/{bucket}/{upload_id}/{value}"
 
     def publish_post(self, post_data: dict) -> str:
         from publisher.post_publisher import publish_blog_post

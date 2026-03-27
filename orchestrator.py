@@ -1,6 +1,5 @@
 import time
 import json
-import subprocess
 import os
 import re
 from datetime import datetime, timezone, timedelta
@@ -11,7 +10,7 @@ from tools.trends import get_trends_data
 from tools.serp_scraper import scrape_serp
 from tools.competitor_analyzer import analyze_competitors, summarize_competitor_patterns
 from tools.site_context import scrape_site_context
-from generator.gemini_client import generate_blog_post, rewrite_blog_post, apply_post_fixes, rewrite_static_page, generate_blog_images, generate_blog_subtitle
+from generator.gemini_client import generate_blog_post, rewrite_blog_post, rewrite_static_page, generate_blog_images, generate_blog_subtitle
 from publisher.post_publisher import publish_blog_post, update_existing_post, update_post_images
 from publisher.mongodb_client import fetch_static_pages, update_static_page, fetch_posts_missing_images, fetch_all_blog_posts
 from publisher.tiptap_converter import parse_gemini_output, extract_text_from_tiptap, markdown_to_static_tiptap
@@ -217,53 +216,6 @@ def _analyze_mongo_posts(mongo_posts):
     return results
 
 
-def send_whatsapp_message(message_text, config):
-    """
-    Auto-approves all posts — WhatsApp review is disabled.
-    Returns: ("approved", None)
-    """
-    print("  [auto-approve] Publishing without review")
-    return ("approved", None)
-
-    phone = config.get("whatsapp", {}).get("phone_number", "")
-    timeout = config.get("whatsapp", {}).get("approval_timeout", 1800)
-
-    if not phone:
-        print("  [whatsapp] No phone number configured, auto-approving")
-        return ("approved", None)
-
-    whatsapp_dir = os.path.join(os.path.dirname(__file__), "whatsapp")
-    script_path = os.path.join(whatsapp_dir, "send_and_wait.js")
-
-    try:
-        result = subprocess.run(
-            ["node", script_path, "--phone", phone, "--message", message_text, "--timeout", str(timeout)],
-            capture_output=True,
-            text=True,
-            timeout=timeout + 60,
-            cwd=whatsapp_dir,
-        )
-        stdout = result.stdout.strip()
-        print(f"  [whatsapp] Result: {stdout[:100]}")
-
-        if "APPROVED" in stdout:
-            return ("approved", None)
-        elif "REJECTED" in stdout:
-            return ("rejected", None)
-        elif stdout.startswith("FEEDBACK:"):
-            feedback_text = stdout[len("FEEDBACK:"):].strip()
-            return ("feedback", feedback_text)
-        else:
-            return ("error", None)
-    except subprocess.TimeoutExpired:
-        print("  [whatsapp] Timeout waiting for reply")
-        return ("error", None)
-    except Exception as e:
-        print(f"  [whatsapp] Error: {e}")
-        return ("error", None)
-
-
-MAX_REVIEW_ROUNDS = 3
 MAX_POST_REWRITES = 3  # max posts rewritten per pipeline run (update + full modes)
 
 
@@ -287,66 +239,6 @@ def _is_topic_covered_by_title(topic, own_posts):
         if overlap / len(topic_words) >= 0.6:
             return True
     return False
-
-
-def _format_post_for_whatsapp(gemini_output, site_name, label="פוסט חדש"):
-    """Format a Gemini blog post into a full WhatsApp review message."""
-    parsed = parse_gemini_output(gemini_output)
-    word_count = len(parsed["body_markdown"].split()) if parsed["body_markdown"] else 0
-
-    return (
-        f"📝 *{label} לבלוג {site_name}*\n\n"
-        f"*כותרת:* {parsed['title']}\n"
-        f"*תיאור:* {parsed['subtitle']}\n"
-        f"*אורך:* ~{word_count} מילים\n\n"
-        f"--- הפוסט המלא ---\n\n"
-        f"{parsed['body_markdown']}"
-    )
-
-
-def _review_loop(gemini_output, config, site_name, label="פוסט חדש"):
-    """
-    Send post to WhatsApp for review. If user sends feedback, fix and re-send.
-    Returns: (final_gemini_output, approved: bool)
-    """
-    current_output = gemini_output
-    received_feedback = False  # track if user already gave feedback
-
-    for attempt in range(1, MAX_REVIEW_ROUNDS + 1):
-        round_label = label if attempt == 1 else f"{label} (תיקון #{attempt - 1})"
-        preview = _format_post_for_whatsapp(current_output, site_name, label=round_label)
-
-        print(f"\n  Sending post for review (round {attempt}/{MAX_REVIEW_ROUNDS})...")
-        status, feedback = send_whatsapp_message(preview, config)
-
-        if status == "approved":
-            return (current_output, True)
-        elif status == "rejected":
-            return (current_output, False)
-        elif status == "feedback":
-            received_feedback = True
-            print(f"  User feedback: {feedback[:100]}...")
-            print(f"  Applying fixes with Gemini...")
-            fixed = apply_post_fixes(current_output, feedback, config)
-            if fixed.startswith("[Gemini Error]"):
-                print(f"  {fixed}")
-                print(f"  Keeping previous version")
-            else:
-                current_output = fixed
-                print(f"  Fixes applied, re-sending for review...")
-        else:
-            if received_feedback:
-                # User already engaged — don't auto-approve the revision without their sign-off
-                print(f"  WhatsApp timeout after feedback — saving as draft (not auto-approving)")
-                return (current_output, False)
-            else:
-                # No response at all (scheduled/unattended run) — auto-approve
-                print(f"  WhatsApp error/timeout, auto-approving")
-                return (current_output, True)
-
-    # Exhausted review rounds — auto-approve
-    print(f"  Max review rounds reached, auto-approving")
-    return (current_output, True)
 
 
 # ═══════════════════════════════════════════════
@@ -724,12 +616,7 @@ def run_new_pipeline(seed_keywords, config):
     else:
         print("  Mobile image: generation failed (will publish without)")
 
-    # ────────────────────────────────────────────
-    # Phase 6: WhatsApp Review (approve / feedback / reject)
-    # ────────────────────────────────────────────
-    print("\n[Phase 6] Sending post for WhatsApp review...")
-
-    final_post, approved = _review_loop(blog_post, config, site_name, label="פוסט חדש")
+    final_post, approved = blog_post, True
 
     # ────────────────────────────────────────────
     # Phase 7: Publish
@@ -931,28 +818,8 @@ def run_update_pipeline(seed_keywords, config):
         else:
             print(f"  '{item['original_title'][:50]}...' — images exist, skipping")
 
-    # ────────────────────────────────────────────
-    # Phase 6: WhatsApp Review (per post — approve / feedback / reject)
-    # ────────────────────────────────────────────
-    print("\n[Phase 6] Sending posts for WhatsApp review...")
-
-    approved_items = []
+    approved_items = list(rewrite_queue)
     rejected_items = []
-
-    for item in rewrite_queue:
-        short_title = item["original_title"][:50]
-        print(f"\n  Reviewing: '{short_title}...'")
-
-        final_output, approved = _review_loop(
-            item["rewritten_output"], config, site_name,
-            label=f"עדכון: {item['original_title'][:40]}"
-        )
-        item["rewritten_output"] = final_output
-
-        if approved:
-            approved_items.append(item)
-        else:
-            rejected_items.append(item)
 
     # ────────────────────────────────────────────
     # Phase 7: Apply Updates
@@ -1210,34 +1077,12 @@ def run_static_pipeline(config):
         print("\n  No pages were rewritten.")
         return
 
-    # ────────────────────────────────────────────
-    # Phase 3: WhatsApp Review
-    # ────────────────────────────────────────────
-    print("\n[Phase 3] Sending pages for WhatsApp review...")
-
     approved_items = []
     for item in rewrite_queue:
-        preview = (
-            f"📄 *עמוד סטטי: {item['page_id']}*\n\n"
-            f"*כותרת:* {item['new_title']}\n"
-            f"*אורך:* ~{len(item['body_markdown'].split())} מילים\n\n"
-            f"--- התוכן המלא ---\n\n"
-            f"{item['body_markdown']}"
-        )
-
-        final_output, approved = _review_loop(
-            item["gemini_output"], config, site_name,
-            label=f"עמוד: {item['page_id']}"
-        )
-
-        if approved:
-            # Re-parse in case feedback changed the content
-            new_title, new_body = _parse_static_page_output(final_output)
-            item["new_title"] = new_title or item["new_title"]
-            item["body_markdown"] = new_body or item["body_markdown"]
-            approved_items.append(item)
-        else:
-            print(f"  [{item['page_id']}] Rejected")
+        new_title, new_body = _parse_static_page_output(item["gemini_output"])
+        item["new_title"] = new_title or item["new_title"]
+        item["body_markdown"] = new_body or item["body_markdown"]
+        approved_items.append(item)
 
     # ────────────────────────────────────────────
     # Phase 4: Apply Updates to MongoDB
@@ -1370,11 +1215,7 @@ def run_full_pipeline(seed_keywords, config):
         desktop_image = images.get("desktop")
         mobile_image = images.get("mobile")
 
-        # WhatsApp review
-        final_post, approved = _review_loop(
-            blog_post, config, site_name,
-            label=f"פוסט חדש {idx}/{len(new_topics)}"
-        )
+        final_post, approved = blog_post, True
 
         if approved:
             try:
@@ -1471,10 +1312,7 @@ def run_full_pipeline(seed_keywords, config):
             if isinstance(original_body, dict):
                 original_body = json.dumps(original_body, ensure_ascii=False)
 
-            final_output, approved = _review_loop(
-                rewritten, config, site_name,
-                label=f"{'עדכון מטא' if subtitle_only else 'עדכון'}: {title[:40]}"
-            )
+            final_output, approved = rewritten, True
 
             if approved:
                 try:
@@ -1556,10 +1394,7 @@ def run_full_pipeline(seed_keywords, config):
                 print(f"  Failed to parse output, skipping")
                 continue
 
-            final_output, approved = _review_loop(
-                rewritten, config, site_name,
-                label=f"עמוד: {page_id}"
-            )
+            final_output, approved = rewritten, True
 
             if approved:
                 final_title, final_body = _parse_static_page_output(final_output)
@@ -1853,7 +1688,6 @@ def run_recover_pipeline(config):
                 f"אחרי:  {page['new_metrics'].get('clicks', 0)} קליקים | {page['new_metrics'].get('impressions', 0)} חשיפות\n\n"
                 f"יש לבדוק ידנית. הודעה זו לא תחזור שוב."
             )
-            send_whatsapp_message(message, config)
             recovery_history = _record_recovery_decision(page["url"], "flagged_no_history", page, config, history=recovery_history)
             continue
 
@@ -1890,7 +1724,7 @@ def run_recover_pipeline(config):
             f"{restore_options}"
         )
 
-        status, _ = send_whatsapp_message(message, config)
+        status = "approved"
 
         if status == "approved":
             if cause == "title_changed_url_broken" or has_original_body:
@@ -1953,11 +1787,7 @@ def run_recover_pipeline(config):
                         print(f"  {rewritten}")
                         recovery_history = _record_recovery_decision(page["url"], "rewrite_failed", page, config, history=recovery_history)
                     else:
-                        # Send the rewrite for WhatsApp review before publishing
-                        final_output, rewrite_approved = _review_loop(
-                            rewritten, config, site_name,
-                            label=f"שחזור: {page['original_title'][:40]}"
-                        )
+                        final_output, rewrite_approved = rewritten, True
 
                         if rewrite_approved:
                             from publisher.post_publisher import update_existing_post
@@ -2879,24 +2709,7 @@ def run_products_pipeline(config):
             item["image_bytes"] = None
             print(f"  Image download failed — will update content only")
 
-    # ── Phase 6: WhatsApp review ─────────────────────────────
-    print("\n[Phase 6] Sending products for WhatsApp review...")
-    approved = []
-
-    for item in rewrite_results:
-        product = item["product"]
-        title = product.get("title", "")
-        meta, html_preview = _parse_product_output(item["rewritten"])
-
-        final_output, ok = _review_loop(
-            item["rewritten"], config, site_name,
-            label=f"מוצר: {title[:40]}"
-        )
-        item["rewritten"] = final_output
-        if ok:
-            approved.append(item)
-        else:
-            print(f"  Rejected: {title[:50]}")
+    approved = list(rewrite_results)
 
     # ── Phase 7: Apply updates ───────────────────────────────
     if not approved:

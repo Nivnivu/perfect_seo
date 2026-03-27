@@ -21,10 +21,8 @@ __pycache__/
 venv/
 .venv/
 
-# Node (whatsapp module)
+# Node
 node_modules/
-.wwebjs_auth/
-.wwebjs_cache/
 
 # UI build output
 ui/dist/

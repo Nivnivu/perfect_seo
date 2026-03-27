@@ -48,10 +48,6 @@ supabase:
   key: "YOUR_SUPABASE_KEY"
   bucket: "blog-poster"
 
-whatsapp:
-  phone_number: "YOUR_PHONE_NUMBER"
-  approval_timeout: 1800
-
 competitors:
   - "https://competitor1.com/"
   - "https://competitor2.com/"
