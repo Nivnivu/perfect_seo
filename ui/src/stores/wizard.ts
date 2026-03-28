@@ -15,7 +15,7 @@ const DEFAULT_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 function defaultForm() {
   return {
     // Step 0 – Platform
-    platform: 'mongodb' as 'mongodb' | 'wordpress' | 'woocommerce' | 'shopify' | 'wix',
+    platform: 'wordpress' as 'mongodb' | 'wordpress' | 'woocommerce' | 'shopify' | 'wix',
 
     // Step 1 – Site Info & AI
     site_id: '',

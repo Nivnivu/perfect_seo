@@ -23,6 +23,7 @@ export const usePipelinesStore = defineStore('pipelines', () => {
   const exitCode = ref<number | null>(null)
   const runId = ref<number | null>(null)
   const history = ref<PipelineRun[]>([])
+  const pendingReviewId = ref<number | null>(null)
 
   function classifyLine(text: string): LogLine['type'] {
     if (text.startsWith('[ERROR]') || text.toLowerCase().includes('error:')) return 'error'
@@ -32,18 +33,19 @@ export const usePipelinesStore = defineStore('pipelines', () => {
     return 'info'
   }
 
-  async function run(siteId: string, mode: string, keywords?: string[]) {
+  async function run(siteId: string, mode: string, keywords?: string[], manualPublish = false) {
     if (isRunning.value) return
     isRunning.value = true
     exitCode.value = null
     runId.value = null
+    pendingReviewId.value = null
     logs.value = []
 
     try {
       const response = await fetch('/api/pipelines/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ site_id: siteId, mode, keywords: keywords?.length ? keywords : null }),
+        body: JSON.stringify({ site_id: siteId, mode, keywords: keywords?.length ? keywords : null, manual_publish: manualPublish }),
       })
 
       if (!response.ok) {
@@ -72,6 +74,8 @@ export const usePipelinesStore = defineStore('pipelines', () => {
             runId.value = parseInt(text.slice(10)) || null
           } else if (text.startsWith('__EXIT__')) {
             exitCode.value = parseInt(text.slice(8)) || 0
+          } else if (text.startsWith('__REVIEW_READY__')) {
+            pendingReviewId.value = parseInt(text.slice(16)) || null
           } else {
             logs.value.push({ text, type: classifyLine(text) })
           }
@@ -120,7 +124,8 @@ export const usePipelinesStore = defineStore('pipelines', () => {
     logs.value = []
     exitCode.value = null
     runId.value = null
+    pendingReviewId.value = null
   }
 
-  return { logs, isRunning, exitCode, runId, history, run, abort, downloadLog, fetchHistory, clear }
+  return { logs, isRunning, exitCode, runId, pendingReviewId, history, run, abort, downloadLog, fetchHistory, clear }
 })

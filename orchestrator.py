@@ -2,6 +2,7 @@ import time
 import json
 import os
 import re
+import base64
 from datetime import datetime, timezone, timedelta
 from collections import Counter
 
@@ -619,6 +620,23 @@ def run_new_pipeline(seed_keywords, config):
     final_post, approved = blog_post, True
 
     # ────────────────────────────────────────────
+    # Preview mode: output content for UI review instead of publishing
+    # ────────────────────────────────────────────
+    if os.environ.get("PIPELINE_PREVIEW_MODE") == "1":
+        parsed = parse_gemini_output(final_post)
+        review_data = {
+            "title": parsed.get("title", ""),
+            "subtitle": parsed.get("subtitle", ""),
+            "body_markdown": parsed.get("body_markdown", ""),
+            "topic": best_new_topic,
+            "image_base64": base64.b64encode(desktop_image).decode() if desktop_image else None,
+        }
+        print(f"__REVIEW_JSON__{json.dumps(review_data, ensure_ascii=False)}__REVIEW_END__")
+        print("\n  Content generated — awaiting review in UI.")
+        print("  Open the Review tab to edit and publish.")
+        return
+
+    # ────────────────────────────────────────────
     # Phase 7: Publish
     # ────────────────────────────────────────────
     if approved:
@@ -820,6 +838,28 @@ def run_update_pipeline(seed_keywords, config):
 
     approved_items = list(rewrite_queue)
     rejected_items = []
+
+    # ────────────────────────────────────────────
+    # Preview mode: output each rewrite for UI review instead of applying
+    # ────────────────────────────────────────────
+    if os.environ.get("PIPELINE_PREVIEW_MODE") == "1":
+        print(f"\n  Preview mode: outputting {len(approved_items)} rewrites for UI review...")
+        for item in approved_items:
+            parsed = parse_gemini_output(item["rewritten_output"])
+            review_data = {
+                "title": item["original_title"],
+                "subtitle": parsed.get("subtitle", ""),
+                "body_markdown": parsed.get("body_markdown", "") if not item.get("subtitle_only") else "",
+                "topic": item["original_title"],
+                "post_id": str(item["post_id"]),
+                "original_title": item["original_title"],
+                "original_body": item.get("original_body", ""),
+                "subtitle_only": item.get("subtitle_only", False),
+                "image_base64": base64.b64encode(item["desktop_image"]).decode() if item.get("desktop_image") else None,
+            }
+            print(f"__REVIEW_JSON__{json.dumps(review_data, ensure_ascii=False)}__REVIEW_END__")
+        print("\n  All rewrites ready — open the Reviews tab to edit and publish.")
+        return
 
     # ────────────────────────────────────────────
     # Phase 7: Apply Updates
@@ -1429,77 +1469,125 @@ def run_full_pipeline(seed_keywords, config):
 # Mode 5: Generate Images for Posts Missing Them
 # ═══════════════════════════════════════════════
 
+def _check_image_quality(url: str) -> tuple[bool, str]:
+    """
+    Download image and check quality. Returns (needs_replacement, reason).
+    Checks: is it reachable, dimensions >= 600px wide, file size sane.
+    Requires: requests (already a dependency), PIL optional.
+    """
+    if not url or not url.startswith("http"):
+        return True, "no URL"
+    try:
+        import requests
+        resp = requests.head(url, timeout=5, allow_redirects=True)
+        if resp.status_code != 200:
+            return True, f"HTTP {resp.status_code}"
+        content_length = int(resp.headers.get("content-length", 0))
+        if content_length > 5 * 1024 * 1024:
+            return True, f"too large ({content_length // 1024}KB)"
+        # Try PIL for dimension check
+        try:
+            from PIL import Image
+            import io
+            full = requests.get(url, timeout=10)
+            img = Image.open(io.BytesIO(full.content))
+            w, h = img.size
+            if w < 600:
+                return True, f"too small ({w}×{h})"
+            return False, f"ok ({w}×{h})"
+        except ImportError:
+            # PIL not installed — trust content-length check alone
+            return False, "ok (no PIL)"
+        except Exception as e:
+            return False, f"ok (parse failed: {e})"
+    except Exception as e:
+        return True, f"unreachable: {e}"
+
+
 def run_images_pipeline(config):
-    """Find all posts with empty images, generate new ones, and upload — no content changes."""
+    """
+    Smart image pipeline:
+    1. Scan ALL posts — missing images AND poor-quality existing images.
+    2. For missing images: generate from title + subtitle.
+    3. For poor-quality images: download original, generate a fresh version from the description.
+    4. Generates a single responsive 1200×630 image per post (no more desktop/mobile split).
+    """
     site_name = config["site"]["name"]
     print("=" * 60)
-    print(f"  {site_name} SEO BLOG ENGINE — IMAGES ONLY")
+    print(f"  {site_name} SEO BLOG ENGINE — SMART IMAGES")
     print("=" * 60)
 
-    # ────────────────────────────────────────────
-    # Phase 1: Site Context (needed for image prompts)
-    # ────────────────────────────────────────────
-    print(f"\n[Phase 1] Scraping {site_name} website for context...")
+    # Phase 1: Site context (brand style for image generation)
+    print(f"\n[Phase 1] Scraping {site_name} for brand context...")
     site_context = scrape_site_context(config)
 
-    # ────────────────────────────────────────────
-    # Phase 2: Find posts with missing images
-    # ────────────────────────────────────────────
-    print("\n[Phase 2] Querying MongoDB for posts with missing images...")
-    posts = fetch_posts_missing_images(config)
-    print(f"  Found {len(posts)} posts with missing images")
+    # Phase 2: Scan all posts for image issues
+    print("\n[Phase 2] Scanning posts for missing or poor-quality images...")
+    all_posts = fetch_all_blog_posts(config)
+    print(f"  Total posts: {len(all_posts)}")
 
-    if not posts:
-        print("\n  All posts already have images! Nothing to do.")
+    needs_image: list[dict] = []
+    for p in all_posts:
+        img_url = p.get("image1Url", "")
+        if not img_url:
+            needs_image.append({**p, "_reason": "missing", "_original_url": ""})
+            continue
+        bad, reason = _check_image_quality(img_url)
+        if bad:
+            needs_image.append({**p, "_reason": reason, "_original_url": img_url})
+
+    if not needs_image:
+        print("\n  All post images look good! Nothing to do.")
         return
 
-    for p in posts:
-        img1 = "yes" if p.get("image1Url") else "MISSING"
-        img2 = "yes" if p.get("image2Url") else "MISSING"
-        print(f"  - {p['title'][:60]}  [desktop: {img1}, mobile: {img2}]")
+    print(f"\n  Posts needing new images: {len(needs_image)}")
+    for p in needs_image:
+        print(f"  - [{p['_reason']}] {p['title'][:70]}")
 
-    # ────────────────────────────────────────────
-    # Phase 3: Generate & upload images
-    # ────────────────────────────────────────────
-    print("\n[Phase 3] Generating and uploading images...")
-
+    # Phase 3: Generate & upload
+    print("\n[Phase 3] Generating images...")
     success_count = 0
     fail_count = 0
 
-    for idx, post in enumerate(posts, 1):
+    for idx, post in enumerate(needs_image, 1):
         title = post["title"]
+        subtitle = post.get("subtitle", "")
         post_id = post["_id"]
+        reason = post["_reason"]
         print(f"\n  {'─' * 40}")
-        print(f"  [{idx}/{len(posts)}] {title[:60]}")
+        print(f"  [{idx}/{len(needs_image)}] {title[:60]}")
+        print(f"  Reason: {reason}")
 
-        # Generate images
-        images = generate_blog_images(title, "", config, site_context=site_context)
-        desktop = images.get("desktop")
-        mobile = images.get("mobile")
+        # Generate single responsive image (1200×630)
+        images = generate_blog_images(title, subtitle, config, site_context=site_context)
+        # Prefer desktop size; fall back to mobile if desktop failed
+        image_bytes = images.get("desktop") or images.get("mobile")
 
-        if not desktop and not mobile:
-            print(f"  Failed to generate any images, skipping")
+        if not image_bytes:
+            print(f"  Image generation failed, skipping")
             fail_count += 1
             continue
 
-        # Upload & update only image fields
+        kb = len(image_bytes) // 1024
+        print(f"  Generated: {kb}KB")
+
+        # Upload: use desktop slot for the single responsive image
         try:
-            update_post_images(post_id, desktop, mobile, config)
+            update_post_images(post_id, image_bytes, None, config)
             success_count += 1
+            print(f"  Uploaded successfully")
         except Exception as e:
-            print(f"  [images] Error: {e}")
+            print(f"  [upload] Error: {e}")
             fail_count += 1
 
-    # ────────────────────────────────────────────
-    # Summary
-    # ────────────────────────────────────────────
     print("\n" + "=" * 60)
-    print("  SUMMARY")
+    print("  SUMMARY — SMART IMAGES")
     print("=" * 60)
-    print(f"  Site: {site_name}")
-    print(f"  Posts with missing images: {len(posts)}")
-    print(f"  Successfully updated: {success_count}")
-    print(f"  Failed: {fail_count}")
+    print(f"  Site          : {site_name}")
+    print(f"  Total posts   : {len(all_posts)}")
+    print(f"  Needed images : {len(needs_image)}")
+    print(f"  Updated       : {success_count}")
+    print(f"  Failed        : {fail_count}")
     print("=" * 60)
 
 

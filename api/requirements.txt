@@ -4,3 +4,4 @@ sse-starlette>=2.1.0
 python-multipart>=0.0.9
 pyyaml>=6.0.1
 requests>=2.31.0
+apscheduler>=3.10.0

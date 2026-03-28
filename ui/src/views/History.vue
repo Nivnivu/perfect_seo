@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import { useSitesStore } from '@/stores/sites'
 import { Clock, AlertCircle, FileText, ChevronDown, ChevronUp } from 'lucide-vue-next'
@@ -44,8 +44,8 @@ const formatDate = (s: string) => {
 <template>
   <div class="p-8 max-w-4xl">
     <div class="mb-8">
-      <h1 class="text-2xl font-bold text-foreground">Update History</h1>
-      <p class="text-muted-foreground mt-1">Track all content updates and their outcomes.</p>
+      <h1 class="text-2xl font-bold text-foreground">{{ $t('history.title') }}</h1>
+      <p class="text-muted-foreground mt-1">{{ $t('history.subtitle') }}</p>
     </div>
 
     <!-- Site + Load -->
@@ -61,7 +61,7 @@ const formatDate = (s: string) => {
         :disabled="!selectedSite || loading"
         class="h-10 px-4 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
       >
-        {{ loading ? 'Loading...' : 'Load History' }}
+        {{ loading ? $t('history.loading') : $t('history.loadHistory') }}
       </button>
     </div>
 
@@ -73,7 +73,7 @@ const formatDate = (s: string) => {
     <!-- Empty -->
     <div v-else-if="history.length === 0 && !loading" class="text-center py-16">
       <Clock class="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-      <p class="text-muted-foreground text-sm">No history yet — run an Update pipeline to see records here.</p>
+      <p class="text-muted-foreground text-sm">{{ $t('history.empty') }}</p>
     </div>
 
     <!-- Records -->
@@ -86,21 +86,21 @@ const formatDate = (s: string) => {
         <!-- Row header -->
         <button
           @click="toggleExpand(i)"
-          class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted/40 transition-colors"
+          class="w-full flex items-center justify-between px-4 py-3 text-start hover:bg-muted/40 transition-colors"
         >
           <div class="flex items-center gap-3 min-w-0">
             <FileText class="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <div class="min-w-0">
-              <p class="text-sm font-medium text-foreground truncate">{{ entry.title ?? entry.post_title ?? 'Untitled' }}</p>
+              <p class="text-sm font-medium text-foreground truncate">{{ entry.title ?? entry.post_title ?? $t('history.untitled') }}</p>
               <p class="text-xs text-muted-foreground">{{ formatDate(entry.updated_at ?? entry.date) }}</p>
             </div>
           </div>
-          <div class="flex items-center gap-2 flex-shrink-0 ml-3">
+          <div class="flex items-center gap-2 flex-shrink-0 ms-3">
             <span v-if="entry.original_title && entry.original_title !== entry.title" class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-              Title changed
+              {{ $t('history.titleChanged') }}
             </span>
             <span v-if="entry.original_body" class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
-              Body backup
+              {{ $t('history.bodyBackup') }}
             </span>
             <ChevronDown v-if="!expanded.has(i)" class="w-4 h-4 text-muted-foreground" />
             <ChevronUp v-else class="w-4 h-4 text-muted-foreground" />

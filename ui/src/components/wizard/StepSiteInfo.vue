@@ -84,7 +84,6 @@ function selectProvider(id: string) {
   wizard.form.ai_image_model = p.defaultImageModel
 }
 
-// Auto-derive blog_url from domain unless manually edited
 const blogUrlTouched = ref(false)
 watch(() => wizard.form.domain, (domain) => {
   if (!blogUrlTouched.value) {
@@ -92,7 +91,6 @@ watch(() => wizard.form.domain, (domain) => {
   }
 })
 
-// Auto-derive site_id from site_name (lowercase + sanitize)
 const siteIdTouched = ref(false)
 watch(() => wizard.form.site_name, (name) => {
   if (!siteIdTouched.value) {
@@ -114,21 +112,21 @@ watch(() => wizard.form.country, () => {
 <template>
   <div>
     <div class="mb-6">
-      <h2 class="text-xl font-bold text-foreground">Site Info & AI Settings</h2>
-      <p class="text-muted-foreground mt-1 text-sm">Configure your site details and choose an AI provider.</p>
+      <h2 class="text-xl font-bold text-foreground">{{ $t('wizard.siteInfo.title') }}</h2>
+      <p class="text-muted-foreground mt-1 text-sm">{{ $t('wizard.siteInfo.subtitle') }}</p>
     </div>
 
     <div class="space-y-5">
       <!-- Site name + site ID -->
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-1.5">
-          <Label>Site Name <span class="text-destructive">*</span></Label>
+          <Label>{{ $t('wizard.siteInfo.siteName') }} <span class="text-destructive">*</span></Label>
           <Input v-model="wizard.form.site_name" placeholder="My Pet Store" />
         </div>
         <div class="space-y-1.5">
           <Label>
-            Site ID <span class="text-destructive">*</span>
-            <span class="text-muted-foreground font-normal ml-1 text-xs">→ config.{{ wizard.form.site_id || 'mysite' }}.yaml</span>
+            {{ $t('wizard.siteInfo.siteId') }} <span class="text-destructive">*</span>
+            <span class="text-muted-foreground font-normal ms-1 text-xs">→ config.{{ wizard.form.site_id || 'mysite' }}.yaml</span>
           </Label>
           <Input
             :value="wizard.form.site_id"
@@ -136,19 +134,19 @@ watch(() => wizard.form.country, () => {
             placeholder="mysite"
             class="font-mono"
           />
-          <p class="text-xs text-muted-foreground">Lowercase, letters/numbers/hyphens only</p>
+          <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.siteIdHint') }}</p>
         </div>
       </div>
 
       <!-- Domain + Blog URL -->
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-1.5">
-          <Label>Domain <span class="text-destructive">*</span></Label>
+          <Label>{{ $t('wizard.siteInfo.domain') }} <span class="text-destructive">*</span></Label>
           <Input v-model="wizard.form.domain" placeholder="mypetstore.com" />
-          <p class="text-xs text-muted-foreground">Without https://</p>
+          <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.domainHint') }}</p>
         </div>
         <div class="space-y-1.5">
-          <Label>Blog URL</Label>
+          <Label>{{ $t('wizard.siteInfo.blogUrl') }}</Label>
           <Input
             v-model="wizard.form.blog_url"
             @focus="blogUrlTouched = true"
@@ -160,28 +158,27 @@ watch(() => wizard.form.country, () => {
       <!-- Language + Country + Google Domain -->
       <div class="grid grid-cols-3 gap-4">
         <div class="space-y-1.5">
-          <Label>Language <span class="text-destructive">*</span></Label>
+          <Label>{{ $t('wizard.siteInfo.language') }} <span class="text-destructive">*</span></Label>
           <Input v-model="wizard.form.language" placeholder="en" class="font-mono" />
-          <p class="text-xs text-muted-foreground">e.g. en, he, fr, de</p>
+          <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.languageHint') }}</p>
         </div>
         <div class="space-y-1.5">
-          <Label>Country <span class="text-destructive">*</span></Label>
+          <Label>{{ $t('wizard.siteInfo.country') }} <span class="text-destructive">*</span></Label>
           <Input v-model="wizard.form.country" placeholder="us" class="font-mono" />
-          <p class="text-xs text-muted-foreground">e.g. us, il, gb, de</p>
+          <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.countryHint') }}</p>
         </div>
         <div class="space-y-1.5">
-          <Label>Google Domain</Label>
+          <Label>{{ $t('wizard.siteInfo.googleDomain') }}</Label>
           <Input v-model="wizard.form.google_domain" placeholder="google.com" class="font-mono" />
-          <p class="text-xs text-muted-foreground">Auto-set from country</p>
+          <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.googleDomainHint') }}</p>
         </div>
       </div>
 
       <!-- AI Provider section -->
       <div class="border-t border-border pt-5">
-        <p class="text-sm font-semibold text-foreground mb-1">AI Provider</p>
-        <p class="text-xs text-muted-foreground mb-4">Choose any provider — use your own API key.</p>
+        <p class="text-sm font-semibold text-foreground mb-1">{{ $t('wizard.siteInfo.aiProvider') }}</p>
+        <p class="text-xs text-muted-foreground mb-4">{{ $t('wizard.siteInfo.aiProviderSubtitle') }}</p>
 
-        <!-- Provider cards -->
         <div class="grid grid-cols-5 gap-2 mb-5">
           <button
             v-for="p in providers"
@@ -199,7 +196,7 @@ watch(() => wizard.form.country, () => {
             >{{ p.short }}</span>
             <div
               v-if="wizard.form.ai_provider === p.id"
-              class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center"
+              class="absolute -top-1.5 -end-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center"
             >
               <Check class="w-2.5 h-2.5 text-white" />
             </div>
@@ -209,43 +206,43 @@ watch(() => wizard.form.country, () => {
         <!-- API Key + Model -->
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <Label>{{ currentProvider.name }} API Key <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.siteInfo.apiKey', { provider: currentProvider.name }) }} <span class="text-destructive">*</span></Label>
             <Input
               v-model="wizard.form.ai_api_key"
               type="password"
               :placeholder="currentProvider.keyPlaceholder"
             />
             <p class="text-xs text-muted-foreground">
-              Get yours at
+              {{ $t('wizard.siteInfo.getYoursAt') }}
               <a :href="currentProvider.docsUrl" target="_blank" class="text-primary hover:underline">
                 {{ currentProvider.docsLabel }}
               </a>
             </p>
           </div>
           <div class="space-y-1.5">
-            <Label>Model</Label>
+            <Label>{{ $t('wizard.siteInfo.model') }}</Label>
             <select
               v-model="wizard.form.ai_model"
               class="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm font-mono ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
             >
               <option v-for="m in currentProvider.models" :key="m" :value="m">{{ m }}</option>
             </select>
-            <p class="text-xs text-muted-foreground">Or type any model ID above after selecting</p>
+            <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.modelHint') }}</p>
           </div>
         </div>
 
-        <!-- Image Generation Model (Gemini / OpenAI only) -->
+        <!-- Image Generation Model -->
         <div v-if="currentProvider.hasImageModel" class="grid grid-cols-2 gap-4 mt-4">
           <div class="space-y-1.5 col-start-1">
-            <Label>Image Generation Model</Label>
+            <Label>{{ $t('wizard.siteInfo.imageModel') }}</Label>
             <select
               v-model="wizard.form.ai_image_model"
               class="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm font-mono ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
             >
-              <option value="">None (skip image generation)</option>
+              <option value="">{{ $t('wizard.siteInfo.noImageModel') }}</option>
               <option v-for="m in currentProvider.imageModels" :key="m" :value="m">{{ m }}</option>
             </select>
-            <p class="text-xs text-muted-foreground">Used to generate post featured images</p>
+            <p class="text-xs text-muted-foreground">{{ $t('wizard.siteInfo.imageModelHint') }}</p>
           </div>
         </div>
       </div>

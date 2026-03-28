@@ -30,6 +30,9 @@ ui/dist/
 # Output
 output/
 
+# Scheduled jobs (user-specific bat/sh files and logs)
+scheduled/
+
 # OS
 .DS_Store
 Thumbs.db

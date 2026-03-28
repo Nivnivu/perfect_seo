@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { X, Check } from 'lucide-vue-next'
 import { useWizardStore } from '@/stores/wizard'
 import StepPlatform      from './wizard/StepPlatform.vue'
@@ -10,42 +11,49 @@ import StepContent       from './wizard/StepContent.vue'
 import StepReview        from './wizard/StepReview.vue'
 
 const wizard = useWizardStore()
+const { t } = useI18n()
 
-const steps = [
-  { label: 'Platform',        desc: 'Choose your CMS',          component: StepPlatform },
-  { label: 'Site Info & AI',  desc: 'Basic settings',            component: StepSiteInfo },
-  { label: 'Credentials',     desc: 'Connect your platform',     component: StepCredentials },
-  { label: 'Search Console',  desc: 'GSC integration (optional)', component: StepSearchConsole },
-  { label: 'Content',         desc: 'Keywords & brand voice',    component: StepContent },
-  { label: 'Review & Save',   desc: 'Confirm and create',        component: StepReview },
-]
+const steps = computed(() => [
+  { label: t('wizard.steps.platform.label'),      desc: t('wizard.steps.platform.desc'),      component: StepPlatform },
+  { label: t('wizard.steps.siteInfo.label'),      desc: t('wizard.steps.siteInfo.desc'),      component: StepSiteInfo },
+  { label: t('wizard.steps.credentials.label'),  desc: t('wizard.steps.credentials.desc'),  component: StepCredentials },
+  { label: t('wizard.steps.searchConsole.label'), desc: t('wizard.steps.searchConsole.desc'), component: StepSearchConsole },
+  { label: t('wizard.steps.content.label'),       desc: t('wizard.steps.content.desc'),       component: StepContent },
+  { label: t('wizard.steps.review.label'),        desc: t('wizard.steps.review.desc'),        component: StepReview },
+])
 
-const stepError = ref<string | null>(null)
+const stepError = computed({
+  get: () => (wizard as any)._stepError ?? null,
+  set: (v) => { (wizard as any)._stepError = v },
+})
 
-const currentComponent = computed(() => steps[wizard.currentStep].component)
-const isLastStep = computed(() => wizard.currentStep === steps.length - 1)
+import { ref } from 'vue'
+const stepErrorRef = ref<string | null>(null)
+
+const currentComponent = computed(() => steps.value[wizard.currentStep].component)
+const isLastStep = computed(() => wizard.currentStep === steps.value.length - 1)
 
 function goToStep(i: number) {
   if (i <= wizard.currentStep) {
     wizard.currentStep = i
-    stepError.value = null
+    stepErrorRef.value = null
   }
 }
 
 function prev() {
   if (wizard.currentStep > 0) {
     wizard.currentStep--
-    stepError.value = null
+    stepErrorRef.value = null
   }
 }
 
 function next() {
   const err = wizard.validateStep(wizard.currentStep)
   if (err) {
-    stepError.value = err
+    stepErrorRef.value = err
     return
   }
-  stepError.value = null
+  stepErrorRef.value = null
   wizard.currentStep++
 }
 
@@ -56,7 +64,7 @@ async function save() {
 function requestClose() {
   const f = wizard.form
   const dirty = f.site_id || f.site_name || f.domain || f.ai_api_key
-  if (dirty && !confirm('Discard unsaved changes and close?')) return
+  if (dirty && !confirm(t('wizard.discardConfirm'))) return
   wizard.close()
 }
 
@@ -85,9 +93,9 @@ function onOverlayClick(e: MouseEvent) {
             style="background: hsl(var(--sidebar));"
           >
             <div class="px-5 py-5 border-b border-white/10">
-              <h2 class="text-white font-bold text-sm leading-none">Add New Site</h2>
+              <h2 class="text-white font-bold text-sm leading-none">{{ $t('wizard.addNewSite') }}</h2>
               <p class="text-xs mt-1" style="color: hsl(var(--sidebar-foreground) / 0.45);">
-                Step {{ wizard.currentStep + 1 }} of {{ steps.length }}
+                {{ $t('wizard.stepOf', { current: wizard.currentStep + 1, total: steps.length }) }}
               </p>
             </div>
 
@@ -97,13 +105,12 @@ function onOverlayClick(e: MouseEvent) {
                 :key="i"
                 type="button"
                 @click="goToStep(i)"
-                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-start transition-colors"
                 :class="[
                   i === wizard.currentStep ? 'bg-white/10' : 'hover:bg-white/6',
                   i > wizard.currentStep ? 'opacity-40 cursor-default' : 'cursor-pointer',
                 ]"
               >
-                <!-- Step indicator circle -->
                 <div
                   class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold transition-all"
                   :class="
@@ -131,10 +138,9 @@ function onOverlayClick(e: MouseEvent) {
               </button>
             </nav>
 
-            <!-- Sidebar footer -->
             <div class="px-4 py-4 border-t border-white/10">
               <p class="text-xs" style="color: hsl(var(--sidebar-foreground) / 0.3);">
-                Creates <code class="text-xs">config.{{ wizard.form.site_id || '…' }}.yaml</code>
+                {{ $t('wizard.creates') }} <code class="text-xs">config.{{ wizard.form.site_id || '…' }}.yaml</code>
               </p>
             </div>
           </div>
@@ -159,33 +165,30 @@ function onOverlayClick(e: MouseEvent) {
 
             <!-- ── Footer ─────────────────────────────────── -->
             <div class="flex-shrink-0 border-t border-border px-8 py-4">
-              <!-- Step error -->
               <div
-                v-if="stepError"
+                v-if="stepErrorRef"
                 class="flex items-center gap-2 text-destructive text-sm mb-3 bg-destructive/8 px-3 py-2 rounded-lg"
               >
-                <span class="text-xs font-medium">{{ stepError }}</span>
+                <span class="text-xs font-medium">{{ stepErrorRef }}</span>
               </div>
 
               <div class="flex items-center justify-between">
-                <!-- Back -->
                 <button
                   type="button"
                   @click="prev"
                   :disabled="wizard.currentStep === 0"
                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-border hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  ← Back
+                  {{ $t('wizard.back') }}
                 </button>
 
-                <!-- Next / Save -->
                 <button
                   v-if="!isLastStep"
                   type="button"
                   @click="next"
                   class="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm"
                 >
-                  Next →
+                  {{ $t('wizard.next') }}
                 </button>
                 <button
                   v-else
@@ -196,7 +199,7 @@ function onOverlayClick(e: MouseEvent) {
                 >
                   <div v-if="wizard.saving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <Check v-else class="w-4 h-4" />
-                  {{ wizard.saving ? 'Saving...' : 'Save Site' }}
+                  {{ wizard.saving ? $t('wizard.saving') : $t('wizard.save') }}
                 </button>
               </div>
             </div>

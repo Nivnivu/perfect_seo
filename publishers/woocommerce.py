@@ -14,7 +14,7 @@ class WooCommercePublisher(BasePlatformPublisher):
     def _base(self):
         return self.config["woocommerce"]["site_url"].rstrip("/")
 
-    def fetch_posts(self, limit: int = 50) -> list[dict]:
+    def _fetch_wc_products(self, limit: int = 50) -> list[dict]:
         resp = requests.get(
             f"{self._base()}/wp-json/wc/v3/products",
             auth=self._auth(),
@@ -27,6 +27,7 @@ class WooCommercePublisher(BasePlatformPublisher):
                 "_id": str(p["id"]),
                 "title": p.get("name", ""),
                 "subtitle": p.get("short_description", ""),
+                "image1Url": p.get("images", [{}])[0].get("src", "") if p.get("images") else "",
                 "url": p.get("permalink", ""),
                 "created_at": p.get("date_created", ""),
                 "status": p.get("status", "publish"),
@@ -34,6 +35,12 @@ class WooCommercePublisher(BasePlatformPublisher):
             }
             for p in resp.json()
         ]
+
+    def fetch_posts(self, limit: int = 50) -> list[dict]:
+        return self._fetch_wc_products(limit)
+
+    def fetch_products(self, limit: int = 50) -> list[dict]:
+        return self._fetch_wc_products(limit)
 
     def publish_post(self, post_data: dict) -> str:
         resp = requests.post(

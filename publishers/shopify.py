@@ -66,6 +66,30 @@ class ShopifyPublisher(BasePlatformPublisher):
         )
         return resp.ok
 
+    def fetch_products(self, limit: int = 50) -> list[dict]:
+        resp = requests.get(
+            f"{self._base()}/products.json",
+            headers=self._headers(),
+            params={"limit": min(limit, 250), "status": "active"},
+            timeout=20,
+        )
+        resp.raise_for_status()
+        results = []
+        domain = self.config["shopify"]["store_domain"].strip().rstrip("/")
+        for p in resp.json().get("products", []):
+            price = p.get("variants", [{}])[0].get("price", "") if p.get("variants") else ""
+            results.append({
+                "_id": str(p["id"]),
+                "title": p.get("title", ""),
+                "subtitle": p.get("body_html", ""),
+                "image1Url": p.get("images", [{}])[0].get("src", "") if p.get("images") else "",
+                "url": f"https://{domain}/products/{p.get('handle', p['id'])}",
+                "created_at": p.get("created_at", ""),
+                "status": p.get("status", "active"),
+                "price": price,
+            })
+        return results
+
     def test_connection(self) -> tuple[bool, str]:
         try:
             resp = requests.get(f"{self._base()}/shop.json", headers=self._headers(), timeout=10)

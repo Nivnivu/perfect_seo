@@ -7,14 +7,14 @@ ROOT_DIR = Path(__file__).parent.parent
 
 
 def get_config_files() -> list[Path]:
-    """List all config YAML files in project root, excluding config.example.yaml."""
+    """List all config YAML files in project root, excluding example configs."""
     files: list[Path] = []
     default = ROOT_DIR / "config.yaml"
     if default.exists():
         files.append(default)
     for f in sorted(glob.glob(str(ROOT_DIR / "config.*.yaml"))):
         p = Path(f)
-        if p.name != "config.example.yaml":
+        if not p.name.startswith("config.example"):
             files.append(p)
     return files
 

@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { Globe, Trash2, RefreshCw, FileText, AlertCircle, CheckCircle2, Info, Plus } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { Globe, Trash2, RefreshCw, FileText, AlertCircle, CheckCircle2, Info, Plus, Pencil } from 'lucide-vue-next'
 import { useSitesStore } from '@/stores/sites'
 import { useWizardStore } from '@/stores/wizard'
 import Card from '@/components/ui/Card.vue'
 import Badge from '@/components/ui/Badge.vue'
 import AddSiteWizard from '@/components/AddSiteWizard.vue'
+import EditSiteDrawer from '@/components/EditSiteDrawer.vue'
 
 const store = useSitesStore()
 const wizard = useWizardStore()
+const { t } = useI18n()
 onMounted(() => store.fetchSites())
 
 const deleting = ref<string | null>(null)
+const editingSiteId = ref<string | null>(null)
 const toast = ref<{ msg: string; type: 'success' | 'error' } | null>(null)
 
 function showToast(msg: string, type: 'success' | 'error') {
@@ -20,13 +24,13 @@ function showToast(msg: string, type: 'success' | 'error') {
 }
 
 async function handleDelete(id: string, name: string) {
-  if (!confirm(`Remove "${name}" from the engine?\n\nThis deletes the config.${id}.yaml file.`)) return
+  if (!confirm(t('sites.removeConfirm', { name, id }))) return
   deleting.value = id
   try {
     await store.deleteSite(id)
-    showToast(`"${name}" removed.`, 'success')
+    showToast(t('sites.removeSuccess', { name }), 'success')
   } catch {
-    showToast('Failed to delete site.', 'error')
+    showToast(t('sites.removeFailed'), 'error')
   } finally {
     deleting.value = null
   }
@@ -50,8 +54,8 @@ const platformBadge = (p: string): any => {
     <!-- Header -->
     <div class="flex items-start justify-between mb-8">
       <div>
-        <h1 class="text-2xl font-bold text-foreground">Sites</h1>
-        <p class="text-muted-foreground mt-1">All configured sites found in project root YAML files.</p>
+        <h1 class="text-2xl font-bold text-foreground">{{ $t('sites.title') }}</h1>
+        <p class="text-muted-foreground mt-1">{{ $t('sites.subtitle') }}</p>
       </div>
       <div class="flex items-center gap-2">
         <button
@@ -60,22 +64,22 @@ const platformBadge = (p: string): any => {
           class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg px-3 py-2 transition-colors disabled:opacity-50"
         >
           <RefreshCw class="w-3.5 h-3.5" :class="store.loading ? 'animate-spin' : ''" />
-          Refresh
+          {{ $t('sites.refresh') }}
         </button>
         <button
           @click="wizard.open()"
           class="flex items-center gap-2 text-sm font-semibold bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
         >
           <Plus class="w-4 h-4" />
-          Add Site
+          {{ $t('sites.addSite') }}
         </button>
       </div>
     </div>
 
-    <!-- Toast -->
+    <!-- Toast — uses end-4 so it flips correctly in RTL -->
     <div
       v-if="toast"
-      class="fixed top-4 right-4 z-40 flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium shadow-lg"
+      class="fixed top-4 end-4 z-40 flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium shadow-lg"
       :class="toast.type === 'success'
         ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
         : 'bg-red-50 text-red-800 border border-red-200'"
@@ -94,17 +98,20 @@ const platformBadge = (p: string): any => {
     <div class="flex items-start gap-3 bg-primary/5 border border-primary/20 rounded-xl p-4 mb-6">
       <Info class="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
       <div class="text-sm text-foreground/80">
-        Sites are stored as YAML files in the project root (e.g.
-        <code class="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">config.mysite.yaml</code>).
-        Click <strong>Add Site</strong> to create one through the wizard, or copy
-        <code class="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">config.example.yaml</code> manually.
+        {{ $t('sites.infoBoxBefore') }}
+        <code class="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">config.mysite.yaml</code>
+        {{ $t('sites.infoBoxMiddle') }}
+        <strong>{{ $t('sites.addSite') }}</strong>
+        {{ $t('sites.infoBoxAfter') }}
+        <code class="bg-muted px-1.5 py-0.5 rounded text-xs font-mono">config.example.yaml</code>
+        {{ $t('sites.infoBoxManual') }}
       </div>
     </div>
 
     <!-- Loading -->
     <div v-if="store.loading && store.sites.length === 0" class="flex items-center gap-2 text-muted-foreground py-8">
       <div class="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-      Loading...
+      {{ $t('sites.loading') }}
     </div>
 
     <!-- Empty -->
@@ -112,12 +119,12 @@ const platformBadge = (p: string): any => {
       <div class="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mx-auto mb-4">
         <Globe class="w-6 h-6 text-muted-foreground/40" />
       </div>
-      <p class="text-muted-foreground text-sm mb-5">No config files found in the project root.</p>
+      <p class="text-muted-foreground text-sm mb-5">{{ $t('sites.emptyDesc') }}</p>
       <button
         @click="wizard.open()"
         class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
       >
-        <Plus class="w-4 h-4" /> Add Your First Site
+        <Plus class="w-4 h-4" /> {{ $t('sites.addFirstSite') }}
       </button>
     </div>
 
@@ -156,10 +163,17 @@ const platformBadge = (p: string): any => {
         <!-- Right: actions -->
         <div class="flex items-center gap-1 flex-shrink-0">
           <button
+            @click="editingSiteId = site.id"
+            class="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+            :title="$t('sites.editSite')"
+          >
+            <Pencil class="w-4 h-4" />
+          </button>
+          <button
             @click="handleDelete(site.id, site.name)"
             :disabled="deleting === site.id"
             class="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-40"
-            title="Remove site"
+            :title="$t('sites.removeSite')"
           >
             <Trash2 class="w-4 h-4" />
           </button>
@@ -170,4 +184,11 @@ const platformBadge = (p: string): any => {
 
   <!-- Wizard modal (teleported to body) -->
   <AddSiteWizard />
+
+  <!-- Edit site drawer (teleported to body) -->
+  <EditSiteDrawer
+    :site-id="editingSiteId"
+    @close="editingSiteId = null"
+    @saved="editingSiteId = null; store.fetchSites(); showToast($t('sites.saveSuccess'), 'success')"
+  />
 </template>

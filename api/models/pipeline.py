@@ -21,3 +21,4 @@ class PipelineRunRequest(BaseModel):
     site_id: str
     mode: PipelineMode
     keywords: Optional[list[str]] = None
+    manual_publish: bool = False

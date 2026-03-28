@@ -28,3 +28,9 @@ class BasePlatformPublisher(ABC):
     def test_connection(self) -> tuple[bool, str]:
         """Test the platform connection. Returns (success, message)."""
         ...
+
+    def fetch_products(self, limit: int = 50) -> list[dict]:
+        """Fetch e-commerce products. Override in store publishers (WooCommerce, Shopify).
+        Returns list of dicts: {_id, title, subtitle, url, created_at, status, price, image1Url, ...}
+        """
+        return []

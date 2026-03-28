@@ -163,6 +163,40 @@ async def get_gsc_summary(site_id: str, days: int = 28):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/{site_id}/pages")
+async def get_gsc_pages(site_id: str, days: int = 28):
+    """Returns all GSC page stats as a dict keyed by URL. Used for per-post hover stats."""
+    site = get_site(site_id)
+    if not site:
+        raise HTTPException(status_code=404, detail=f"Site '{site_id}' not found")
+
+    gsc_config = _check_gsc(site)
+    if not gsc_config or not _token_exists(gsc_config):
+        return {}
+
+    def _fetch():
+        import sys
+        sys.path.insert(0, str(ROOT_DIR))
+        from tools.search_console import fetch_gsc_performance
+        perf = fetch_gsc_performance(site, days=days)
+        if not perf:
+            return {}
+        return {
+            url: {
+                "clicks": int(d["clicks"]),
+                "impressions": int(d["impressions"]),
+                "position": round(d["position"], 1),
+                "ctr_pct": round(d["ctr"] * 100, 1),
+            }
+            for url, d in perf.items()
+        }
+
+    try:
+        return await asyncio.to_thread(_fetch)
+    except Exception:
+        return {}
+
+
 @router.get("/{site_id}/series")
 async def get_gsc_series(site_id: str, weeks: int = 12):
     """Returns weekly click/impression trend data for charts."""

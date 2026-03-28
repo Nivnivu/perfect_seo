@@ -47,9 +47,9 @@ async function testConnection() {
 <template>
   <div>
     <div class="mb-6">
-      <h2 class="text-xl font-bold text-foreground">Platform Credentials</h2>
+      <h2 class="text-xl font-bold text-foreground">{{ $t('wizard.credentials.title') }}</h2>
       <p class="text-muted-foreground mt-1 text-sm">
-        Connect the SEO engine to your {{ wizard.form.platform }} instance.
+        {{ $t('wizard.credentials.subtitle', { platform: wizard.form.platform }) }}
       </p>
     </div>
 
@@ -58,19 +58,19 @@ async function testConnection() {
       <!-- ── MongoDB ── -->
       <template v-if="wizard.form.platform === 'mongodb'">
         <div class="space-y-4">
-          <p class="text-sm font-semibold text-foreground">MongoDB Connection</p>
+          <p class="text-sm font-semibold text-foreground">{{ $t('wizard.credentials.mongodbSection') }}</p>
           <div class="space-y-1.5">
-            <Label>MongoDB URI <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.mongodbUri') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.mongodb_uri" type="password" placeholder="mongodb+srv://user:pass@cluster.mongodb.net/" class="font-mono" />
-            <p class="text-xs text-muted-foreground">Find this in MongoDB Atlas → Connect → Drivers</p>
+            <p class="text-xs text-muted-foreground">{{ $t('wizard.credentials.mongodbUriHint') }}</p>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
-              <Label>Database</Label>
+              <Label>{{ $t('wizard.credentials.database') }}</Label>
               <Input v-model="wizard.form.mongodb_database" placeholder="multiBlogDB" class="font-mono" />
             </div>
             <div class="space-y-1.5">
-              <Label>Collection <span class="text-destructive">*</span></Label>
+              <Label>{{ $t('wizard.credentials.collection') }} <span class="text-destructive">*</span></Label>
               <Input v-model="wizard.form.mongodb_collection" placeholder="mysite_posts" class="font-mono" />
             </div>
           </div>
@@ -80,85 +80,76 @@ async function testConnection() {
       <!-- ── WordPress ── -->
       <template v-else-if="wizard.form.platform === 'wordpress'">
         <div class="space-y-4">
-          <p class="text-sm font-semibold text-foreground">WordPress REST API</p>
+          <p class="text-sm font-semibold text-foreground">{{ $t('wizard.credentials.wordpressSection') }}</p>
           <div class="space-y-1.5">
-            <Label>Site URL <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.siteUrl') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.wp_site_url" placeholder="https://myblog.com" />
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
-              <Label>Username <span class="text-destructive">*</span></Label>
+              <Label>{{ $t('wizard.credentials.username') }} <span class="text-destructive">*</span></Label>
               <Input v-model="wizard.form.wp_username" placeholder="admin" />
             </div>
             <div class="space-y-1.5">
-              <Label>Application Password <span class="text-destructive">*</span></Label>
+              <Label>{{ $t('wizard.credentials.appPassword') }} <span class="text-destructive">*</span></Label>
               <Input v-model="wizard.form.wp_app_password" type="password" placeholder="xxxx xxxx xxxx xxxx" class="font-mono" />
             </div>
           </div>
-          <Alert variant="info">
-            Generate an application password in WordPress Admin → Users → Edit your profile → Application Passwords.
-            Requires WordPress 5.6 or later.
-          </Alert>
+          <Alert variant="info">{{ $t('wizard.credentials.wordpressNote') }}</Alert>
         </div>
       </template>
 
       <!-- ── WooCommerce ── -->
       <template v-else-if="wizard.form.platform === 'woocommerce'">
         <div class="space-y-4">
-          <p class="text-sm font-semibold text-foreground">WooCommerce REST API</p>
+          <p class="text-sm font-semibold text-foreground">{{ $t('wizard.credentials.woocommerceSection') }}</p>
           <div class="space-y-1.5">
-            <Label>Site URL <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.siteUrl') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.wc_site_url" placeholder="https://mystore.com" />
           </div>
           <div class="space-y-1.5">
-            <Label>Consumer Key <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.consumerKey') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.wc_consumer_key" type="password" placeholder="ck_..." class="font-mono" />
           </div>
           <div class="space-y-1.5">
-            <Label>Consumer Secret <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.consumerSecret') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.wc_consumer_secret" type="password" placeholder="cs_..." class="font-mono" />
           </div>
-          <Alert variant="info">
-            Generate keys in WooCommerce → Settings → Advanced → REST API → Add key (Read/Write permissions).
-          </Alert>
+          <Alert variant="info">{{ $t('wizard.credentials.woocommerceNote') }}</Alert>
         </div>
       </template>
 
       <!-- ── Shopify ── -->
       <template v-else-if="wizard.form.platform === 'shopify'">
         <div class="space-y-4">
-          <p class="text-sm font-semibold text-foreground">Shopify Admin API</p>
+          <p class="text-sm font-semibold text-foreground">{{ $t('wizard.credentials.shopifySection') }}</p>
           <div class="space-y-1.5">
-            <Label>Store Domain <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.storeDomain') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.shopify_store_domain" placeholder="mystore.myshopify.com" class="font-mono" />
-            <p class="text-xs text-muted-foreground">Use your .myshopify.com domain</p>
+            <p class="text-xs text-muted-foreground">{{ $t('wizard.credentials.storeDomainHint') }}</p>
           </div>
           <div class="space-y-1.5">
-            <Label>Admin API Access Token <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.adminToken') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.shopify_admin_api_token" type="password" placeholder="shpat_..." class="font-mono" />
           </div>
-          <Alert variant="info">
-            Create a custom app in Shopify Admin → Apps → Develop apps. Enable write access for Articles and Products.
-          </Alert>
+          <Alert variant="info">{{ $t('wizard.credentials.shopifyNote') }}</Alert>
         </div>
       </template>
 
       <!-- ── Wix ── -->
       <template v-else-if="wizard.form.platform === 'wix'">
         <div class="space-y-4">
-          <p class="text-sm font-semibold text-foreground">Wix Headless API</p>
+          <p class="text-sm font-semibold text-foreground">{{ $t('wizard.credentials.wixSection') }}</p>
           <div class="space-y-1.5">
-            <Label>API Key <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.apiKeyLabel') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.wix_api_key" type="password" placeholder="IST...." class="font-mono" />
           </div>
           <div class="space-y-1.5">
-            <Label>Site ID <span class="text-destructive">*</span></Label>
+            <Label>{{ $t('wizard.credentials.siteIdLabel') }} <span class="text-destructive">*</span></Label>
             <Input v-model="wizard.form.wix_site_id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" class="font-mono" />
-            <p class="text-xs text-muted-foreground">Found in your Wix dashboard URL: manage.wix.com/dashboard/<strong>SITE-ID</strong>/home</p>
+            <p class="text-xs text-muted-foreground">{{ $t('wizard.credentials.wixSiteIdHint') }}</p>
           </div>
-          <Alert variant="warning">
-            Wix connection will be verified on the first pipeline run. API key must have Blog and Stores permissions.
-          </Alert>
+          <Alert variant="warning">{{ $t('wizard.credentials.wixNote') }}</Alert>
         </div>
       </template>
 
@@ -166,20 +157,20 @@ async function testConnection() {
       <template v-if="needsSupabase">
         <div class="border-t border-border pt-5 space-y-4">
           <div>
-            <p class="text-sm font-semibold text-foreground">Image Storage (Supabase)</p>
-            <p class="text-xs text-muted-foreground mt-0.5">Generated images are stored in Supabase Storage.</p>
+            <p class="text-sm font-semibold text-foreground">{{ $t('wizard.credentials.supabaseSection') }}</p>
+            <p class="text-xs text-muted-foreground mt-0.5">{{ $t('wizard.credentials.supabaseSubtitle') }}</p>
           </div>
           <div class="space-y-1.5">
-            <Label>Supabase URL</Label>
+            <Label>{{ $t('wizard.credentials.supabaseUrl') }}</Label>
             <Input v-model="wizard.form.supabase_url" placeholder="https://xxxx.supabase.co" class="font-mono" />
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
-              <Label>Supabase Anon Key</Label>
+              <Label>{{ $t('wizard.credentials.supabaseAnonKey') }}</Label>
               <Input v-model="wizard.form.supabase_key" type="password" placeholder="eyJ..." class="font-mono" />
             </div>
             <div class="space-y-1.5">
-              <Label>Bucket Name</Label>
+              <Label>{{ $t('wizard.credentials.bucketName') }}</Label>
               <Input v-model="wizard.form.supabase_bucket" placeholder="blog-poster" class="font-mono" />
             </div>
           </div>
@@ -197,10 +188,10 @@ async function testConnection() {
           >
             <Loader2 v-if="testState === 'loading'" class="w-4 h-4 animate-spin" />
             <Zap v-else class="w-4 h-4 text-primary" />
-            {{ testState === 'loading' ? 'Testing...' : 'Test Connection' }}
+            {{ testState === 'loading' ? $t('wizard.credentials.testing') : $t('wizard.credentials.testConnection') }}
           </button>
           <span v-if="testState === 'idle'" class="text-xs text-muted-foreground">
-            Verify your credentials before saving
+            {{ $t('wizard.credentials.verifyHint') }}
           </span>
         </div>
 

@@ -9,12 +9,15 @@ Works with **any AI provider** and **any major CMS platform**.
 ## Features
 
 - **Local web UI** — no SaaS, no subscriptions, runs on your machine
-- **Multi-platform** — MongoDB, WordPress, WooCommerce, Shopify, Wix
+- **Multi-platform** — WordPress, WooCommerce, Shopify, Wix, MongoDB (blog-poster)
 - **Any AI provider** — Google Gemini, OpenAI, Anthropic Claude, Mistral, DeepSeek
 - **GSC integration** — protect ranking pages, find page-2 opportunities, track performance
 - **Live pipeline streaming** — watch every step in real time, abort anytime, download logs
 - **Multi-site** — manage unlimited sites from one UI, each with its own config
+- **Posts & Products** — browse published content and products with GSC stats on hover
 - **Pipeline history** — every run logged with status, duration, and log preview
+- **Manual Review Gate** — optionally hold generated content in a review queue; edit in the TipTap rich-text editor with AI chat refinement before publishing
+- **Scheduled Automation** — create Daily / Weekly / Monthly / Custom cron schedules per site and mode; runs in-process via APScheduler with per-run log history
 
 ---
 
@@ -23,8 +26,8 @@ Works with **any AI provider** and **any major CMS platform**.
 > **Requirements:** Python 3.10+, Node.js 18+, Git Bash (Windows) or any Unix shell
 
 ```bash
-git clone https://github.com/your-username/seo-blog-engine.git
-cd seo-blog-engine
+git clone https://github.com/Nivnivu/perfect_seo.git
+cd perfect_seo
 ./start.sh
 ```
 
@@ -50,10 +53,11 @@ Open `http://localhost:5173/sites` and click **Add Site**. The wizard walks you 
 Or copy one of the example configs manually:
 
 ```bash
-# Choose the one that matches your platform:
-cp config.example.mongodb.yaml   config.mysite.yaml
-cp config.example.wordpress.yaml config.mysite.yaml
-cp config.example.shopify.yaml   config.mysite.yaml
+cp config.example.wordpress.yaml   config.mysite.yaml
+cp config.example.woocommerce.yaml config.mysite.yaml
+cp config.example.shopify.yaml     config.mysite.yaml
+cp config.example.wix.yaml         config.mysite.yaml
+cp config.example.mongodb.yaml     config.mysite.yaml   # blog-poster CMS users
 ```
 
 ---
@@ -74,7 +78,7 @@ gemini:
 ```yaml
 openai:
   api_key: "sk-..."                         # platform.openai.com/api-keys
-  model: "gpt-4o"
+  model: "gpt-4.1"
   image_model: "dall-e-3"                   # optional
 ```
 
@@ -103,30 +107,6 @@ deepseek:
 
 ### 3. Platform Credentials
 
-#### MongoDB (default)
-
-You need a MongoDB Atlas cluster and a Supabase project for image storage.
-
-```yaml
-platform: mongodb
-
-mongodb:
-  uri: "mongodb+srv://user:pass@cluster.mongodb.net/"
-  database: "multiBlogDB"
-  collection: "your_collection"
-
-supabase:
-  url: "https://xxxx.supabase.co"
-  key: "your-service-role-key"
-  bucket: "blog-poster"
-```
-
-**MongoDB Atlas:** Create a free cluster at [mongodb.com/atlas](https://www.mongodb.com/atlas) → Database → Connect → Drivers → copy the URI.
-
-**Supabase:** Create a project at [supabase.com](https://supabase.com) → Settings → API → copy URL and service_role key. Create a storage bucket named `blog-poster` and set it to public.
-
----
-
 #### WordPress
 
 Uses the WordPress REST API v2 with an Application Password (no plugins needed).
@@ -137,14 +117,13 @@ platform: wordpress
 wordpress:
   site_url: "https://yourblog.com"
   username: "your-wp-username"
-  app_password: "xxxx xxxx xxxx xxxx xxxx xxxx"  # WP Admin → Users → Edit → Application Passwords
+  app_password: "xxxx xxxx xxxx xxxx xxxx xxxx"
 ```
 
 **How to get an Application Password:**
-1. Go to WordPress Admin → Users → Edit your user
-2. Scroll to **Application Passwords** section
-3. Enter a name (e.g. "SEO Engine") → click **Add New Application Password**
-4. Copy the generated password (shown only once)
+1. WordPress Admin → Users → Edit your user
+2. Scroll to **Application Passwords** → Enter a name → **Add New**
+3. Copy the generated password (shown only once)
 
 ---
 
@@ -160,9 +139,9 @@ woocommerce:
 ```
 
 **How to get API keys:**
-1. Go to WooCommerce → Settings → Advanced → REST API
-2. Click **Add Key** → set permissions to **Read/Write**
-3. Copy the Consumer Key and Consumer Secret
+1. WooCommerce → Settings → Advanced → REST API
+2. **Add Key** → permissions: **Read/Write**
+3. Copy Consumer Key and Consumer Secret
 
 ---
 
@@ -177,9 +156,9 @@ shopify:
 ```
 
 **How to get an Admin API token:**
-1. Shopify Admin → Settings → Apps and sales channels → Develop apps
+1. Shopify Admin → Settings → Apps → Develop apps
 2. Enable custom app development → Create an app
-3. Configure Admin API scopes: `read_content`, `write_content`, `read_products`, `write_products`
+3. Admin API scopes: `read_content`, `write_content`, `read_products`, `write_products`
 4. Install the app → copy the Admin API access token
 
 ---
@@ -190,62 +169,81 @@ shopify:
 platform: wix
 
 wix:
-  api_key: "IST.eyJ..."                     # Wix API key (starts with IST.)
+  api_key: "IST.eyJ..."
   site_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
 **How to get Wix credentials:**
-1. Go to [Wix Dev Center](https://dev.wix.com) → API Keys
+1. [Wix Dev Center](https://dev.wix.com) → API Keys
 2. Create a key with **Blog** and **Stores** permissions
 3. Your site ID is in your Wix dashboard URL
 
 ---
 
+#### MongoDB (blog-poster)
+
+For users of the [blog-poster](https://github.com/Nivnivu/blog-poster) open source CMS — a headless blog engine for React, Vue, and Next.js websites.
+
+```yaml
+platform: mongodb
+
+mongodb:
+  uri: "mongodb+srv://user:pass@cluster.mongodb.net/"
+  database: "multiBlogDB"
+  collection: "your_collection"
+
+supabase:
+  url: "https://xxxx.supabase.co"
+  key: "your-service-role-key"
+  bucket: "blog-poster"
+```
+
+**MongoDB Atlas:** Create a free cluster at [mongodb.com/atlas](https://www.mongodb.com/atlas) → Connect → Drivers → copy the URI.
+
+**Supabase:** Create a project at [supabase.com](https://supabase.com) → Settings → API → copy URL and service_role key. Create a storage bucket named `blog-poster` (public).
+
+---
+
 ### 4. Google Search Console (optional but recommended)
 
-GSC enables: ranking protection (never overwrite pages with real clicks), page-2 opportunity detection, CTR optimization, and the Analytics dashboard.
+GSC enables: ranking protection, page-2 opportunity detection, CTR optimization, and the Analytics dashboard.
 
-**Each user needs their own Google Cloud credentials — do not share yours.**
+**Each user needs their own Google Cloud credentials.**
 
 #### Step 1 — Create a Google Cloud project
 
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Create a new project (e.g. "SEO Blog Engine")
-3. Go to **APIs & Services → Library** → search **Google Search Console API** → Enable it
+1. [console.cloud.google.com](https://console.cloud.google.com) → New project
+2. **APIs & Services → Library** → search **Google Search Console API** → Enable
 
 #### Step 2 — Create OAuth credentials
 
-1. Go to **APIs & Services → Credentials** → **Create Credentials → OAuth 2.0 Client ID**
+1. **APIs & Services → Credentials → Create Credentials → OAuth 2.0 Client ID**
 2. Application type: **Desktop app**
-3. Name it anything (e.g. "SEO Engine Local")
-4. Download the JSON → save it to the project root as `client_secret_xxx.json`
+3. Download the JSON → save to project root as `client_secret_xxx.json`
 
-#### Step 3 — OAuth consent screen (for your own use)
+#### Step 3 — OAuth consent screen
 
-1. Go to **APIs & Services → OAuth consent screen**
-2. User type: **External** → fill in App name + your email
-3. Add scope: `https://www.googleapis.com/auth/webmasters.readonly`
-4. Add yourself as a **Test user** (under "Test users")
-5. Keep the app in **Testing** mode — you do NOT need to publish it for personal/team use
-
-> **Why keep it in Testing mode?** Publishing requires a Google security review. Since this is a local tool using your own credentials accessing your own Search Console data, Testing mode is correct. Every user of the open-source project creates their own project + stays in Testing mode.
+1. **APIs & Services → OAuth consent screen** → User type: **External**
+2. Add scope: `https://www.googleapis.com/auth/webmasters.readonly`
+3. Add yourself as a **Test user**
+4. Keep the app in **Testing** mode — no Google review needed for personal/team use
 
 #### Step 4 — Configure your site
 
 ```yaml
 search_console:
-  credentials_file: "client_secret_xxx.json"   # path relative to project root
-  token_file: "gsc_token.json"                  # auto-saved after first auth
-  site_url: "https://yoursite.com/"             # must match exactly what's in GSC
+  credentials_file: "client_secret_xxx.json"
+  token_file: "gsc_token.json"
+  site_url: "https://yoursite.com/"        # must match GSC exactly
   protection_thresholds:
-    min_clicks: 10        # pages with more clicks than this are NEVER rewritten
+    min_clicks: 10
     min_impressions: 100
     max_position: 20.0
 ```
 
-#### Step 5 — Authorize in the browser
+#### Step 5 — Authorize
 
-Open the **Analytics** tab in the UI → click **Connect GSC**. Your browser will open Google's authorization page. Sign in with the Google account that has Search Console access. The token is saved to `gsc_token.json` and reused automatically.
+Open the **Analytics** tab → click **Connect GSC**. Sign in with your Google account. The token is saved to `gsc_token.json` automatically.
 
 ---
 
@@ -257,7 +255,7 @@ Open the **Analytics** tab in the UI → click **Connect GSC**. Your browser wil
 | `update` | Find underperforming posts via GSC → rewrite them |
 | `full` | New post + updates + static pages in one run |
 | `static` | Rewrite static pages (homepage, about, etc.) |
-| `images` | Generate missing images for existing posts |
+| `images` | Scan all posts, check image quality, generate/replace as needed |
 | `recover` | Restore posts that lost rankings after an update |
 | `diagnose` | Deep SEO audit: indexing, Core Web Vitals, cannibalization |
 | `dedupe` | Detect and fix keyword cannibalization |
@@ -277,37 +275,27 @@ python run.py update --config config.mysite.yaml
 ## CLI Usage
 
 ```bash
-# All modes support --config to target a specific site
-python run.py new                          # uses config.yaml (default)
-python run.py new --config config.pawly.yaml
-python run.py update --config config.everst.yaml
-python run.py full --config config.shop.yaml
+python run.py new                            # uses config.yaml (default)
+python run.py new --config config.mysite.yaml
+python run.py update --config config.mysite.yaml
+python run.py full --config config.mysite.yaml
 ```
 
 ---
 
 ## Docker
 
-Run the API in a container while keeping the UI local:
-
 ```bash
 # Start everything
 docker compose up
 
-# UI still runs locally (in a separate terminal):
-cd ui && npm install && npm run dev
-```
-
-Or run only the API in Docker and the UI locally:
-
-```bash
-docker compose up api
+# UI still runs locally:
 cd ui && npm install && npm run dev
 ```
 
 The API is available at `http://localhost:8000` and the UI at `http://localhost:5173`.
 
-> **Config files** are mounted from the host — edit them on your machine as normal.
+> Config files are mounted from the host — edit them on your machine as normal.
 
 ---
 
@@ -316,18 +304,20 @@ The API is available at `http://localhost:8000` and the UI at `http://localhost:
 ```
 seo-blog-engine/
 ├── run.py                     # CLI entry point
-├── orchestrator.py            # Main pipeline logic
+├── orchestrator.py            # Main pipeline logic (all 11 modes)
 ├── config.example.*.yaml      # Config templates per platform
 │
-├── api/                       # FastAPI backend (local web server)
-│   ├── main.py
+├── api/                       # FastAPI backend
+│   ├── main.py                # lifespan: init_db, load schedules, start APScheduler
 │   ├── config_manager.py
-│   └── routes/                # sites, pipelines, gsc, posts, history
+│   ├── db.py                  # SQLite init (pipeline_runs, pending_reviews, schedules, schedule_runs)
+│   ├── scheduler.py           # APScheduler wrapper
+│   └── routes/                # sites, pipelines, gsc, posts, products, history, reviews, schedules
 │
-├── publishers/                # Multi-platform publisher abstraction
+├── publishers/                # Platform publisher abstraction
 │   ├── base.py                # Abstract interface
-│   ├── mongodb.py / wordpress.py / woocommerce.py / shopify.py / wix.py
-│   └── factory.py             # get_publisher(config)
+│   ├── factory.py             # get_publisher(config)
+│   └── mongodb.py / wordpress.py / woocommerce.py / shopify.py / wix.py
 │
 ├── tools/                     # Research & analysis
 │   ├── search_console.py      # GSC auth, performance, opportunities
@@ -337,9 +327,10 @@ seo-blog-engine/
 │
 ├── generator/                 # AI content generation
 │   ├── gemini_client.py
-│   └── prompts.py
+│   ├── prompts.py
+│   └── refine.py              # AI chat refinement for review gate
 │
-├── publisher/                 # MongoDB publishing pipeline
+├── publisher/                 # MongoDB publishing pipeline (blog-poster)
 │   ├── post_publisher.py
 │   ├── mongodb_client.py
 │   ├── supabase_client.py
@@ -347,11 +338,16 @@ seo-blog-engine/
 │
 ├── ui/                        # Vue 3 + Vite frontend
 │   └── src/
-│       ├── views/             # Dashboard, Sites, Pipelines, Analytics, Posts, History
-│       ├── components/        # AppSidebar, LiveLog, AddSiteWizard, ui/*
-│       └── stores/            # Pinia: sites, pipelines, wizard
+│       ├── views/             # Dashboard, Sites, Pipelines, Analytics, Posts, Products, History,
+│       │                      #   Schedules, PostReview
+│       ├── components/        # AppSidebar, LiveLog, TipTapEditor, AddSiteWizard, wizard/*, ui/*
+│       ├── stores/            # Pinia: sites, pipelines, wizard, reviews, schedules
+│       └── i18n/              # English + Hebrew translations
 │
-├── Dockerfile                 # API container
+├── scheduled/                 # Gitignored — schedule logs and user bat/sh files
+│   └── logs/                  # {site}-{mode}.log per schedule run
+│
+├── Dockerfile
 ├── docker-compose.yml
 └── start.sh                   # One-command local startup
 ```
@@ -363,26 +359,40 @@ seo-blog-engine/
 | Layer | Technology |
 |---|---|
 | Frontend | Vue 3 + TypeScript + Vite + TailwindCSS |
-| UI Style | shadcn/ui pattern (CSS variables, orange primary) |
+| UI style | shadcn/ui pattern (CSS variables, orange primary) |
+| Rich text editor | TipTap (`@tiptap/vue-3`, starter-kit, extensions) |
 | Charts | Chart.js + vue-chartjs |
 | State | Pinia |
+| i18n | vue-i18n (English + Hebrew) |
 | Backend | FastAPI + uvicorn |
 | Streaming | Server-Sent Events (SSE) |
+| Scheduling | APScheduler (`apscheduler>=3.10.0`) |
 | Pipeline history | SQLite |
-| Config | YAML files (per site, gitignored) |
+| Config | YAML files per site (gitignored) |
 | AI text | Gemini / OpenAI / Claude / Mistral / DeepSeek |
 | AI images | Imagen 4 / DALL-E 3 |
 | GSC | Google Search Console API v1 (OAuth2 Desktop) |
-| Content DB | MongoDB Atlas |
-| Image storage | Supabase Storage |
+| Content DB | MongoDB Atlas (blog-poster platform) |
+| Image storage | Supabase Storage (blog-poster platform) |
+
+### Install notes
+
+After cloning, the `start.sh` script handles all dependencies automatically. If installing manually:
+
+```bash
+pip install -r requirements.txt -r api/requirements.txt   # includes apscheduler
+cd ui && npm install                                       # includes TipTap packages
+```
 
 ---
+
+## Documentation
+
+Full technical documentation for contributors: [DOCS.md](DOCS.md)
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set up a dev environment and submit changes.
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev environment setup and PR guidelines.
 
 ## License
 
