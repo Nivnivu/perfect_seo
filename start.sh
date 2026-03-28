@@ -30,8 +30,9 @@ cd ..
 # Start both servers
 echo "[3/3] Starting servers..."
 echo ""
-echo "  API  →  http://localhost:8000"
-echo "  UI   →  http://localhost:5173"
+LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+echo "  API  →  http://localhost:8000   (network: http://${LOCAL_IP}:8000)"
+echo "  UI   →  http://localhost:5173   (network: http://${LOCAL_IP}:5173)"
 echo "  Docs →  http://localhost:8000/docs"
 echo ""
 echo "  Press Ctrl+C to stop."
@@ -45,10 +46,10 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-python -m uvicorn api.main:app --reload --port 8000 &
+python -m uvicorn api.main:app --reload --port 8000 --host 0.0.0.0 &
 API_PID=$!
 
-cd ui && npm run dev &
+cd ui && npm run dev -- --host &
 UI_PID=$!
 
 # Auto-open browser after a short delay
