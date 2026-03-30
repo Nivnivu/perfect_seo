@@ -62,7 +62,10 @@ def test_platform_connection(request: TestConnectionRequest):
     elif platform == PlatformType.WORDPRESS:
         try:
             import requests as req
-            base = creds.get("site_url", "").rstrip("/")
+            raw = creds.get("site_url", "").strip().rstrip("/")
+            if raw and not raw.startswith(("http://", "https://")):
+                raw = "https://" + raw
+            base = raw
             url = base + "/wp-json/wp/v2/users/me"
             auth_method = creds.get("auth_method", "app_password")
             kw: dict = {"timeout": 10, "allow_redirects": True}
@@ -128,7 +131,10 @@ def test_platform_connection(request: TestConnectionRequest):
     elif platform == PlatformType.WOOCOMMERCE:
         try:
             import requests as req
-            url = creds.get("site_url", "").rstrip("/") + "/wp-json/wc/v3/system_status"
+            raw_wc = creds.get("site_url", "").strip().rstrip("/")
+            if raw_wc and not raw_wc.startswith(("http://", "https://")):
+                raw_wc = "https://" + raw_wc
+            url = raw_wc + "/wp-json/wc/v3/system_status"
             r = req.get(url, auth=(creds.get("consumer_key", ""), creds.get("consumer_secret", "")), timeout=10)
             if r.status_code == 200:
                 return {"success": True, "message": "WooCommerce connection successful ✓"}
