@@ -297,7 +297,7 @@
       "platform": { "label": "פלטפורמה", "desc": "בחר את ה-CMS שלך" },
       "siteInfo": { "label": "פרטי אתר ו-AI", "desc": "הגדרות בסיסיות" },
       "credentials": { "label": "אישורים", "desc": "חבר את הפלטפורמה" },
-      "searchConsole": { "label": "Search Console", "desc": "שילוב GSC (אופציונלי)" },
+      "searchConsole": { "label": "Search Console", "desc": "שילוב GSC (מומלץ)" },
       "content": { "label": "תוכן", "desc": "מילות מפתח וקול מותג" },
       "review": { "label": "סקירה ושמירה", "desc": "אשר וצור" }
     },

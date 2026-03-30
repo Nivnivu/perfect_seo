@@ -297,7 +297,7 @@
       "platform": { "label": "Platform", "desc": "Choose your CMS" },
       "siteInfo": { "label": "Site Info & AI", "desc": "Basic settings" },
       "credentials": { "label": "Credentials", "desc": "Connect your platform" },
-      "searchConsole": { "label": "Search Console", "desc": "GSC integration (optional)" },
+      "searchConsole": { "label": "Search Console", "desc": "GSC integration (Recommended)" },
       "content": { "label": "Content", "desc": "Keywords & brand voice" },
       "review": { "label": "Review & Save", "desc": "Confirm and create" }
     },

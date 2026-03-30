@@ -62,22 +62,68 @@ def test_platform_connection(request: TestConnectionRequest):
     elif platform == PlatformType.WORDPRESS:
         try:
             import requests as req
-            url = creds.get("site_url", "").rstrip("/") + "/wp-json/wp/v2/users/me"
+            base = creds.get("site_url", "").rstrip("/")
+            url = base + "/wp-json/wp/v2/users/me"
             auth_method = creds.get("auth_method", "app_password")
+            kw: dict = {"timeout": 10, "allow_redirects": True}
             if auth_method == "bearer":
-                r = req.get(url, headers={"Authorization": f"Bearer {creds.get('token', '')}"}, timeout=10)
+                kw["headers"] = {"Authorization": f"Bearer {creds.get('token', '')}"}
             elif auth_method == "password":
-                r = req.get(url, auth=(creds.get("username", ""), creds.get("password", "")), timeout=10)
+                kw["auth"] = (creds.get("username", ""), creds.get("password", ""))
             else:  # app_password
-                r = req.get(url, auth=(creds.get("username", ""), creds.get("app_password", "")), timeout=10)
+                kw["auth"] = (creds.get("username", ""), creds.get("app_password", ""))
+
+            r = req.get(url, **kw)
+            snippet = r.text[:400].strip()
+
             if r.status_code == 200:
-                name = r.json().get("name", "user")
-                return {"success": True, "message": f"WordPress connected as: {name} ✓"}
-            raise HTTPException(status_code=400, detail=f"WordPress auth failed (HTTP {r.status_code}). Check your credentials.")
+                try:
+                    name = r.json().get("name", "user")
+                    return {"success": True, "message": f"WordPress connected as: {name} ✓"}
+                except Exception:
+                    # 200 but not JSON — REST API reachable but returned unexpected content
+                    preview = snippet[:120]
+                    raise HTTPException(
+                        status_code=400,
+                        detail=(
+                            f"WordPress REST API returned HTTP 200 but the body is not JSON. "
+                            f"Make sure pretty permalinks are enabled (Settings → Permalinks → save). "
+                            f"Response preview: {preview!r}"
+                        ),
+                    )
+
+            if r.status_code == 401:
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"Authentication failed (HTTP 401). "
+                        + ("Check your username and application password. Generate one in Users → Profile → Application Passwords."
+                           if auth_method == "app_password" else
+                           "Check your username and password.")
+                    ),
+                )
+            if r.status_code == 404:
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"REST API not found at {url}. "
+                        f"Ensure pretty permalinks are enabled and the site URL is the WordPress root (not a page or blog path)."
+                    ),
+                )
+            if "<html" in snippet.lower():
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"WordPress returned an HTML page (HTTP {r.status_code}) instead of JSON. "
+                        f"The REST API may be blocked by a security plugin, firewall, or the URL is wrong. "
+                        f"Preview: {snippet[:150]!r}"
+                    ),
+                )
+            raise HTTPException(status_code=400, detail=f"WordPress error HTTP {r.status_code}: {snippet[:200]}")
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(status_code=400, detail=f"WordPress error: {e}")
+            raise HTTPException(status_code=400, detail=f"WordPress connection error: {e}")
 
     elif platform == PlatformType.WOOCOMMERCE:
         try:
