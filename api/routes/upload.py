@@ -1,5 +1,4 @@
 """File upload endpoints — logo, etc."""
-import os
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from api.config_manager import ROOT_DIR
 
