@@ -68,6 +68,7 @@ function defaultForm() {
     seed_keywords: '',
     competitors: '',
     brand_voice: '',
+    brand_logo_path: '',   // relative path returned by /api/upload/logo
     image_description: '',
     image_visual_elements: '',
     image_color_palette: '',
@@ -169,6 +170,7 @@ export const useWizardStore = defineStore('wizard', () => {
       language: form.language,
       country: form.country,
       google_domain: form.google_domain,
+      ...(form.brand_logo_path ? { logo: form.brand_logo_path } : {}),
     }
     config.scraping = { user_agent: DEFAULT_UA, request_delay: 2 }
 

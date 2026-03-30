@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
-from api.routes import sites, pipelines, history, gsc, posts, products, reviews, schedules, chat  # noqa: E402
+from api.routes import sites, pipelines, history, gsc, posts, products, reviews, schedules, chat, upload  # noqa: E402
 
 
 @asynccontextmanager
@@ -47,6 +47,7 @@ app.include_router(products.router, prefix="/api/products", tags=["products"])
 app.include_router(reviews.router, prefix="/api/reviews", tags=["reviews"])
 app.include_router(schedules.router, prefix="/api/schedules", tags=["schedules"])
 app.include_router(chat.router, prefix="/api/chat", tags=["chat"])
+app.include_router(upload.router, prefix="/api/upload", tags=["upload"])
 
 
 @app.get("/api/health")
