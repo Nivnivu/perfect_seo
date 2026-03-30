@@ -46,7 +46,7 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-python -m uvicorn api.main:app --reload --port 8000 --host 0.0.0.0 &
+python -m uvicorn api.main:app --reload --reload-dir api --reload-dir publishers --port 8000 --host 0.0.0.0 &
 API_PID=$!
 
 cd ui && npm run dev -- --host &

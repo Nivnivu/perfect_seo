@@ -43,7 +43,7 @@ echo.
 echo  Press Ctrl+C in either window to stop.
 echo.
 
-start "SEO Engine — API" cmd /k "cd /d "%~dp0" && uvicorn api.main:app --reload --port 8000"
+start "SEO Engine — API" cmd /k "cd /d "%~dp0" && uvicorn api.main:app --reload --reload-dir api --reload-dir publishers --port 8000"
 timeout /t 2 /nobreak > nul
 start "SEO Engine — UI" cmd /k "cd /d "%~dp0ui" && npm run dev"
 
