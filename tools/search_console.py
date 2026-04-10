@@ -572,7 +572,7 @@ def fetch_gsc_weekly_trends(config, weeks=12):
 # Query Cannibalization Detection
 # ═══════════════════════════════════════════════
 
-def find_cannibalization(page_queries, blog_path="", min_impressions=10, min_urls=2):
+def find_cannibalization(page_queries, blog_path="", min_impressions=10, min_urls=2, brand_terms=None):
     """
     Detect keyword cannibalization: multiple blog URLs ranking for the same query.
     When two posts compete for the same query, Google splits the ranking signal
@@ -580,9 +580,14 @@ def find_cannibalization(page_queries, blog_path="", min_impressions=10, min_url
 
     page_queries: output of fetch_page_queries()
     blog_path: optional URL path filter (e.g. "/blog") to only check blog posts
+    brand_terms: list of brand name strings (e.g. ["אוורסט"]) — queries containing
+                 any of these terms are excluded (navigational brand queries are not
+                 real cannibalization; all posts naturally appear for brand searches)
     Returns: list of {query, urls, total_impressions, best_position} sorted by severity
     """
     from collections import defaultdict
+
+    brand_terms_lower = [t.lower() for t in (brand_terms or [])]
 
     query_to_urls = defaultdict(list)
 
@@ -591,13 +596,18 @@ def find_cannibalization(page_queries, blog_path="", min_impressions=10, min_url
         if blog_path and blog_path not in url:
             continue
         for q in queries:
-            if q["impressions"] >= min_impressions:
-                query_to_urls[q["query"]].append({
-                    "url": url,
-                    "impressions": q["impressions"],
-                    "clicks": q["clicks"],
-                    "position": q["position"],
-                })
+            if q["impressions"] < min_impressions:
+                continue
+            # Skip brand/navigational queries — appearing on many pages for your own brand
+            # name is not cannibalization, it's normal brand visibility.
+            if brand_terms_lower and any(term in q["query"].lower() for term in brand_terms_lower):
+                continue
+            query_to_urls[q["query"]].append({
+                "url": url,
+                "impressions": q["impressions"],
+                "clicks": q["clicks"],
+                "position": q["position"],
+            })
 
     # Keep only queries with multiple ranking URLs
     cannibalized = []

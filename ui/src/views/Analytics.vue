@@ -8,7 +8,7 @@ import {
 import { Line, Bar } from 'vue-chartjs'
 import { useSitesStore } from '@/stores/sites'
 import { useI18n } from 'vue-i18n'
-import { TrendingUp, MousePointerClick, Eye, Target, AlertCircle, RefreshCw, Info, Link2, Loader2 } from 'lucide-vue-next'
+import { TrendingUp, MousePointerClick, Eye, Target, AlertCircle, RefreshCw, Info, Link2, Loader2, RotateCcw } from 'lucide-vue-next'
 import axios from 'axios'
 
 ChartJS.register(
@@ -38,6 +38,9 @@ const configured = ref(true)
 const authenticated = ref(true)
 const authorizing = ref(false)
 const authMessage = ref('')
+const reindexing = ref(false)
+const reindexMessage = ref('')
+const reindexSuccess = ref(false)
 const summary = ref<Summary | null>(null)
 const topPages = ref<PageRow[]>([])
 const page2 = ref<PageRow[]>([])
@@ -181,6 +184,25 @@ async function authorizeGsc() {
   }
 }
 
+async function requestIndexing() {
+  if (!selectedSite.value) return
+  reindexing.value = true
+  reindexMessage.value = ''
+  reindexSuccess.value = false
+  try {
+    const { data } = await axios.post(`/api/gsc/${selectedSite.value}/request-indexing`)
+    reindexSuccess.value = true
+    reindexMessage.value = data.message ?? t('analytics.indexingRequested')
+    setTimeout(() => { reindexMessage.value = '' }, 6000)
+  } catch (e: any) {
+    reindexSuccess.value = false
+    reindexMessage.value = e.response?.data?.detail ?? e.message
+    setTimeout(() => { reindexMessage.value = '' }, 6000)
+  } finally {
+    reindexing.value = false
+  }
+}
+
 function shortUrl(url: string) {
   try { return new URL(url).pathname } catch { return url }
 }
@@ -229,6 +251,16 @@ function positionClass(pos: number) {
           {{ $t('analytics.refresh') }}
         </button>
         <button
+          @click="requestIndexing"
+          :disabled="reindexing || !selectedSite || !configured || !authenticated"
+          class="flex items-center gap-1.5 h-9 px-3 rounded-lg border border-emerald-500/40 text-sm text-emerald-700 hover:bg-emerald-50 transition-colors disabled:opacity-50"
+          :title="$t('analytics.requestIndexing')"
+        >
+          <Loader2 v-if="reindexing" class="w-3.5 h-3.5 animate-spin" />
+          <RotateCcw v-else class="w-3.5 h-3.5" />
+          {{ reindexing ? $t('analytics.requestingIndexing') : $t('analytics.requestIndexing') }}
+        </button>
+        <button
           @click="authorizeGsc"
           :disabled="authorizing || !selectedSite"
           class="flex items-center gap-1.5 h-9 px-3 rounded-lg border border-primary/40 text-sm text-primary hover:bg-primary/5 transition-colors disabled:opacity-50"
@@ -239,6 +271,16 @@ function positionClass(pos: number) {
           {{ authorizing ? $t('analytics.authorizing') : $t('analytics.connectGsc') }}
         </button>
       </div>
+    </div>
+
+    <!-- Re-index feedback -->
+    <div
+      v-if="reindexMessage"
+      class="flex items-center gap-2 px-4 py-3 rounded-lg mb-4 text-sm"
+      :class="reindexSuccess ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-destructive/10 text-destructive'"
+    >
+      <RotateCcw class="w-4 h-4 flex-shrink-0" />
+      {{ reindexMessage }}
     </div>
 
     <!-- Error -->

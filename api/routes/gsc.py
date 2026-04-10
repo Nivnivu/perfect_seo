@@ -197,6 +197,36 @@ async def get_gsc_pages(site_id: str, days: int = 28):
         return {}
 
 
+@router.post("/{site_id}/request-indexing")
+async def request_indexing(site_id: str):
+    """Submit the site's sitemap to Google Search Console to request re-crawling of all pages."""
+    site = get_site(site_id)
+    if not site:
+        raise HTTPException(status_code=404, detail=f"Site '{site_id}' not found")
+
+    gsc_config = _check_gsc(site)
+    if not gsc_config:
+        raise HTTPException(status_code=400, detail="GSC not configured for this site.")
+    if not _token_exists(gsc_config):
+        raise HTTPException(status_code=400, detail="GSC not authorized. Connect GSC first.")
+
+    def _ping():
+        import sys
+        sys.path.insert(0, str(ROOT_DIR))
+        from tools.search_console import ping_sitemap
+        return ping_sitemap(site)
+
+    try:
+        success = await asyncio.to_thread(_ping)
+        if success:
+            return {"status": "ok", "message": "Sitemap submitted to Google. Pages will be re-crawled within hours."}
+        raise HTTPException(status_code=400, detail="Could not find sitemap at standard paths (sitemap.xml / sitemap_index.xml). Verify your sitemap is publicly accessible.")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/{site_id}/series")
 async def get_gsc_series(site_id: str, weeks: int = 12):
     """Returns weekly click/impression trend data for charts."""

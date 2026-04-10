@@ -217,7 +217,7 @@ def _analyze_mongo_posts(mongo_posts):
     return results
 
 
-MAX_POST_REWRITES = 3  # max posts rewritten per pipeline run (update + full modes)
+MAX_POST_REWRITES = 5  # max posts rewritten per pipeline run (update + full modes)
 
 
 def _is_topic_covered_by_title(topic, own_posts):
@@ -467,7 +467,9 @@ def run_research(seed_keywords, config):
                 blog_path = urlparse(config["site"].get("blog_url", "")).path.rstrip("/")
             except Exception:
                 pass
-            cannibalization = find_cannibalization(page_queries, blog_path=blog_path)
+            # brand_terms: prefer explicit list from config (supports Hebrew), fall back to site name
+            brand_terms = config["site"].get("brand_terms") or ([config["site"]["name"]] if config["site"].get("name") else [])
+            cannibalization = find_cannibalization(page_queries, blog_path=blog_path, min_impressions=30, brand_terms=brand_terms)
             cannibalizing_urls = set()
             for cluster in cannibalization:
                 if len(cluster["urls"]) >= 2:
@@ -2270,7 +2272,8 @@ def run_diagnose_pipeline(config):
     # Section 5: Keyword Cannibalization
     # ────────────────────────────────────────────
     section("5. KEYWORD CANNIBALIZATION")
-    cannibalized = find_cannibalization(page_queries, blog_path=blog_url_path, min_impressions=10, min_urls=2)
+    _brand_terms = config["site"].get("brand_terms") or ([config["site"]["name"]] if config["site"].get("name") else [])
+    cannibalized = find_cannibalization(page_queries, blog_path=blog_url_path, min_impressions=10, min_urls=2, brand_terms=_brand_terms)
     if cannibalized:
         line(f"  {len(cannibalized)} queries where multiple posts compete (splitting ranking signals):")
         line("")

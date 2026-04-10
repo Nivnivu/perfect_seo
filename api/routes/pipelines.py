@@ -1,8 +1,10 @@
 import asyncio
 import os
+import subprocess
 import sys
 import json
 import re
+import threading
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from sse_starlette.sse import EventSourceResponse
@@ -12,8 +14,8 @@ from api.db import get_conn, init_db
 
 router = APIRouter()
 
-# In-memory process registry: run_id → asyncio subprocess
-_active_runs: dict[int, asyncio.subprocess.Process] = {}
+# In-memory process registry: run_id → subprocess.Popen
+_active_runs: dict[int, subprocess.Popen] = {}
 
 init_db()
 
@@ -58,25 +60,46 @@ async def run_pipeline(request: PipelineRunRequest):
             "PYTHONUNBUFFERED": "1",
             "PIPELINE_PREVIEW_MODE": "1" if preview_mode else "0",
         }
-        exit_code = 1
         log_tail: list[str] = []
         review_buffer = ""
         in_review_json = False
+        exit_code_ref = [1]
+
+        # Use a thread + asyncio.Queue so subprocess streaming works on Windows
+        # (asyncio.create_subprocess_exec requires ProactorEventLoop on Windows,
+        # but uvicorn creates the event loop before main.py is imported, so the
+        # policy fix in main.py arrives too late)
+        loop = asyncio.get_event_loop()
+        queue: asyncio.Queue = asyncio.Queue()
+
+        def _run_subprocess():
+            try:
+                proc = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    cwd=str(ROOT_DIR),
+                    env=env,
+                )
+                _active_runs[run_id] = proc
+                for raw in proc.stdout:
+                    line = raw.decode("utf-8", errors="replace").rstrip()
+                    if line:
+                        loop.call_soon_threadsafe(queue.put_nowait, line)
+                proc.wait()
+                exit_code_ref[0] = proc.returncode if proc.returncode is not None else 1
+            except Exception as e:
+                loop.call_soon_threadsafe(queue.put_nowait, f"[ERROR] Failed to start process: {e}")
+            finally:
+                loop.call_soon_threadsafe(queue.put_nowait, None)  # sentinel
+
+        threading.Thread(target=_run_subprocess, daemon=True).start()
 
         try:
-            process = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.STDOUT,
-                cwd=str(ROOT_DIR),
-                env=env,
-            )
-            _active_runs[run_id] = process
-
-            async for raw_line in process.stdout:
-                line = raw_line.decode("utf-8", errors="replace").rstrip()
-                if not line:
-                    continue
+            while True:
+                line = await queue.get()
+                if line is None:
+                    break
 
                 # Detect start of review JSON block
                 if "__REVIEW_JSON__" in line:
@@ -107,12 +130,6 @@ async def run_pipeline(request: PipelineRunRequest):
                     log_tail.pop(0)
                 yield {"data": line}
 
-            await process.wait()
-            exit_code = process.returncode if process.returncode is not None else 1
-
-        except Exception as e:
-            yield {"data": f"[ERROR] Failed to start process: {e}"}
-            exit_code = 1
         finally:
             _active_runs.pop(run_id, None)
             finished_at = datetime.now(timezone.utc).isoformat()
@@ -120,11 +137,11 @@ async def run_pipeline(request: PipelineRunRequest):
             with get_conn() as conn:
                 conn.execute(
                     "UPDATE pipeline_runs SET finished_at=?, exit_code=?, log_preview=? WHERE id=?",
-                    (finished_at, exit_code, log_preview, run_id),
+                    (finished_at, exit_code_ref[0], log_preview, run_id),
                 )
                 conn.commit()
 
-        yield {"data": f"__EXIT__{exit_code}"}
+        yield {"data": f"__EXIT__{exit_code_ref[0]}"}
 
     return EventSourceResponse(stream())
 

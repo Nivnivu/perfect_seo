@@ -315,6 +315,28 @@ def fetch_static_pages(config):
     return pages
 
 
+def create_static_page(page_id, title, content, config):
+    """
+    Create a new static page record in the collection.
+    content: TipTap JSON object (dict, not string).
+    Returns the inserted document's _id as a string.
+    """
+    client = _get_client(config)
+    db = client[config["mongodb"]["database"]]
+    collection = db[config["mongodb"]["collection"]]
+
+    doc = {
+        "pageId": page_id,
+        "type": "staticPage",
+        "title": title,
+        "content": content,
+        "createdAt": datetime.now(timezone.utc),
+        "updatedAt": datetime.now(timezone.utc),
+    }
+    result = collection.insert_one(doc)
+    return str(result.inserted_id)
+
+
 def update_static_page(page_id, title, content, config):
     """
     Update a static page's title and content by its _id.
