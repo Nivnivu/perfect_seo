@@ -2,6 +2,7 @@ import { createI18n } from 'vue-i18n'
 import en from './locales/en.json'
 import he from './locales/he.json'
 import de from './locales/de.json'
+import ru from './locales/ru.json'
 
 // RTL language codes — extend this list as new locales are added
 const RTL_LOCALES = ['he', 'ar', 'fa', 'ur', 'yi', 'dv', 'ps', 'sd']
@@ -15,8 +16,9 @@ export interface LocaleEntry {
 export const SUPPORTED_LOCALES: LocaleEntry[] = [
   { code: 'en', name: 'English' },
   { code: 'he', name: 'עברית' },
-  { code: 'de', name: 'Deutsch' }
-] 
+  { code: 'de', name: 'Deutsch' },
+  { code: 'ru', name: 'Русский' }
+]
 
 export function isRtl(locale: string): boolean {
   return RTL_LOCALES.includes(locale)
@@ -36,7 +38,7 @@ const i18n = createI18n({
   legacy: false,          // Composition API mode — $t still available in templates
   locale: saved,
   fallbackLocale: 'en',
-  messages: { en, he, de },
+  messages: { en, he, de, ru },
   // Add your locale messages object here when contributing a new language:
   // messages: { en, he, ar, fr, de, ... }
 })
